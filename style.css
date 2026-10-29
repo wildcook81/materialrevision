@@ -786,6 +786,96 @@ body.theme-dark .alert-tip {
   background: rgba(16, 185, 129, 0.08);
 }
 
+/* ── Lab Practical Readiness Checklist ───────────────────────── */
+.checklist-card {
+  background: var(--c-surface);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.checklist-card h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--txt-primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  letter-spacing: -0.01em;
+}
+
+.checklist-card h4::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.check-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.85rem !important;
+  padding: 0.85rem 1.15rem !important;
+  background: var(--c-bg-subtle);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--txt-secondary);
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.check-item:hover {
+  background: var(--c-surface-hover);
+  border-color: var(--bdr-hover);
+  color: var(--txt-primary);
+  transform: translateX(2px);
+}
+
+.check-item input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.check-item:has(input:checked),
+.check-item.checked {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  color: #166534 !important;
+  font-weight: 500;
+}
+
+body.theme-dark .check-item:has(input:checked),
+body.theme-dark .check-item.checked {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  color: #6ee7b7 !important;
+}
+
 /* ── 11. Theory Cards & Formula Banners ──────────────────────── */
 .theory-card {
   background: var(--c-surface);

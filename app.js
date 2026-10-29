@@ -3412,6 +3412,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
+  // Lab Practical Readiness Checklist Persistence & Interaction
+  // =========================================================================
+  const checkItems = document.querySelectorAll('.check-item');
+  checkItems.forEach(item => {
+    const input = item.querySelector('input[type="checkbox"]');
+    if (!input) return;
+    const checkKey = 'matrev_chk_' + (input.dataset.check || input.name || item.textContent.slice(0, 20).trim());
+    if (localStorage.getItem(checkKey) === 'true') {
+      input.checked = true;
+      item.classList.add('checked');
+    }
+    input.addEventListener('change', () => {
+      localStorage.setItem(checkKey, input.checked ? 'true' : 'false');
+      if (input.checked) {
+        item.classList.add('checked');
+      } else {
+        item.classList.remove('checked');
+      }
+    });
+  });
+
+  // =========================================================================
   // Print Lab Cheat Sheet
   // =========================================================================
   const printBtn = document.getElementById('printBtn');
