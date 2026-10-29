@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Theme Toggle (Dark / Light)
   // =========================================================================
   const themeToggleBtn = document.getElementById('themeToggleBtn');
-  const savedTheme = localStorage.getItem('matlab_theme') || 'theme-dark';
+  const savedTheme = localStorage.getItem('matlab_theme') || 'theme-light';
   document.body.className = savedTheme;
 
   themeToggleBtn.addEventListener('click', () => {
