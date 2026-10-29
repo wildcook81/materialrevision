@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
   <script>
     MathJax = {
       tex: {
@@ -238,10 +238,7 @@
           <!-- Section Tabs -->
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp1-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp1-theory">Principle & Microstructures</button>
-            <button class="subtab-btn" data-target="exp1-sim">&#128300; Virtual Microscope</button>
-            <button class="subtab-btn" data-target="exp1-calc">Observation & Calculator</button>
-            <button class="subtab-btn" data-target="exp1-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp1-theory">Principle &amp; Microstructures</button>
           </div>
 
           <!-- Tab Content: Procedure -->
@@ -387,12 +384,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
-          <!-- Tab Content: Observation & Calculator -->
           
-          <!-- Tab Content: Virtual Metallurgical Microscope Simulator -->
-          <div class="subtab-content" id="exp1-sim">
+<div class="sim-embedded-section" id="exp1-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -516,8 +509,12 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp1-calc">
+          <!-- Tab Content: Observation & Calculator -->
+          
+          <!-- Tab Content: Virtual Metallurgical Microscope Simulator -->
+          <div class="subtab-content" id="exp1-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Metallography Optics & Grain Size Estimator</h4>
@@ -554,7 +551,7 @@
           </div>
 
           <!-- Tab Content: Viva Questions -->
-          <div class="subtab-content" id="exp1-viva">
+          <div class="subtab-content" id="exp1-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp1-viva">Expand All Answers</button>
@@ -707,9 +704,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp2-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp2-theory">Theory & Governing Equations</button>
-            <button class="subtab-btn" data-target="exp2-calc">Tensile Calculator & Plots</button>
-            <button class="subtab-btn" data-target="exp2-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp2-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp2-procedure">
@@ -855,11 +850,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Virtual UTM Tensile Test Simulator -->
-          <div class="subtab-content" id="exp2-sim">
+<div class="sim-embedded-section" id="exp2-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -950,8 +942,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp2-calc">
+          
+          <!-- Tab Content: Virtual UTM Tensile Test Simulator -->
+          <div class="subtab-content" id="exp2-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Tensile Property Calculator</h4>
@@ -1012,7 +1007,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp2-viva">
+          <div class="subtab-content" id="exp2-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp2-viva">Expand All Answers</button>
@@ -1170,10 +1165,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp3-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp3-theory">Polymer Chemistry & Physics</button>
-            <button class="subtab-btn" data-target="exp3-sim">&#128202; Rule of Mixtures Graph</button>
-            <button class="subtab-btn" data-target="exp3-calc">Batch Mixing Calculator</button>
-            <button class="subtab-btn" data-target="exp3-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp3-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp3-procedure">
@@ -1301,11 +1293,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Rule of Mixtures Graph Studio -->
-          <div class="subtab-content" id="exp3-sim">
+<div class="sim-embedded-section" id="exp3-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -1367,8 +1356,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp3-calc">
+          
+          <!-- Tab Content: Rule of Mixtures Graph Studio -->
+          <div class="subtab-content" id="exp3-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Composite Batch & Volume Fraction Estimator</h4>
@@ -1404,7 +1396,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp3-viva">
+          <div class="subtab-content" id="exp3-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp3-viva">Expand All Answers</button>
@@ -1562,9 +1554,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp4-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp4-theory">Charpy vs. Izod Deep Dive</button>
-            <button class="subtab-btn" data-target="exp4-calc">Impact Energy Calculator</button>
-            <button class="subtab-btn" data-target="exp4-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp4-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp4-procedure">
@@ -1700,11 +1690,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Virtual Charpy Impact Simulator -->
-          <div class="subtab-content" id="exp4-sim">
+<div class="sim-embedded-section" id="exp4-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -1795,8 +1782,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp4-calc">
+          
+          <!-- Tab Content: Virtual Charpy Impact Simulator -->
+          <div class="subtab-content" id="exp4-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Impact Toughness Calculator</h4>
@@ -1840,7 +1830,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp4-viva">
+          <div class="subtab-content" id="exp4-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp4-viva">Expand All Answers</button>
@@ -2003,10 +1993,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp5-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp5-theory">Vernier Principles & Fracture Zones</button>
-            <button class="subtab-btn" data-target="exp5-sim">&#128202; ASTM E399 P-CMOD Graph</button>
-            <button class="subtab-btn" data-target="exp5-calc">Vernier Reading & 3-Point Average</button>
-            <button class="subtab-btn" data-target="exp5-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp5-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp5-procedure">
@@ -2139,11 +2126,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: ASTM E399 Load vs CMOD Graph Studio -->
-          <div class="subtab-content" id="exp5-sim">
+<div class="sim-embedded-section" id="exp5-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -2209,8 +2193,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp5-calc">
+          
+          <!-- Tab Content: ASTM E399 Load vs CMOD Graph Studio -->
+          <div class="subtab-content" id="exp5-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Vernier Metrology & 3-Point Averaging Tool</h4>
@@ -2265,7 +2252,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp5-viva">
+          <div class="subtab-content" id="exp5-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp5-viva">Expand All Answers</button>
@@ -2431,10 +2418,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp6-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp6-theory">Mechanics & S-N Analysis</button>
-            <button class="subtab-btn" data-target="exp6-sim">&#128202; W&ouml;hler S-N Curve Studio</button>
-            <button class="subtab-btn" data-target="exp6-calc">Bending Stress & Life Calculator</button>
-            <button class="subtab-btn" data-target="exp6-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp6-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp6-procedure">
@@ -2565,11 +2549,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Wöhler S-N Curve Studio -->
-          <div class="subtab-content" id="exp6-sim">
+<div class="sim-embedded-section" id="exp6-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -2631,8 +2612,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp6-calc">
+          
+          <!-- Tab Content: Wöhler S-N Curve Studio -->
+          <div class="subtab-content" id="exp6-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Rotating Bending Stress & Section Modulus Tool</h4>
@@ -2674,7 +2658,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp6-viva">
+          <div class="subtab-content" id="exp6-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp6-viva">Expand All Answers</button>
@@ -2841,9 +2825,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp7-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp7-theory">Theory & Multi-Method Comparison</button>
-            <button class="subtab-btn" data-target="exp7-calc">Vickers & Hardness Converter</button>
-            <button class="subtab-btn" data-target="exp7-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp7-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp7-procedure">
@@ -2981,11 +2963,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Virtual Vickers Hardness Simulator -->
-          <div class="subtab-content" id="exp7-sim">
+<div class="sim-embedded-section" id="exp7-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -3063,8 +3042,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp7-calc">
+          
+          <!-- Tab Content: Virtual Vickers Hardness Simulator -->
+          <div class="subtab-content" id="exp7-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Vickers Hardness & Equivalence Converter</h4>
@@ -3096,7 +3078,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp7-viva">
+          <div class="subtab-content" id="exp7-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp7-viva">Expand All Answers</button>
@@ -3266,10 +3248,7 @@
 
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp8-procedure">How to Perform</button>
-            <button class="subtab-btn" data-target="exp8-theory">Phase Transformations & TTT/CCT</button>
-            <button class="subtab-btn" data-target="exp8-sim">&#128202; T-t &amp; Hardness Graphs</button>
-            <button class="subtab-btn" data-target="exp8-calc">Phase & Hardness Predictor</button>
-            <button class="subtab-btn" data-target="exp8-viva">Viva Voce Questions (10)</button>
+            <button class="subtab-btn" data-target="exp8-theory">Principle &amp; Microstructures</button>
           </div>
 
           <div class="subtab-content active" id="exp8-procedure">
@@ -3402,11 +3381,8 @@
                 </table>
               </div>
             </div>
-          </div>
-
           
-          <!-- Tab Content: Thermal Processing & Tempering Graph Studio -->
-          <div class="subtab-content" id="exp8-sim">
+<div class="sim-embedded-section" id="exp8-sim">
             <div class="simulation-card">
               <div class="sim-header">
                 <div class="sim-header-title">
@@ -3467,8 +3443,11 @@
               </div>
             </div>
           </div>
+          </div>
 
-          <div class="subtab-content" id="exp8-calc">
+          
+          <!-- Tab Content: Thermal Processing & Tempering Graph Studio -->
+          <div class="subtab-content" id="exp8-calc" style="display: none !important;">
             <div class="calc-panel">
               <div class="calc-header">
                 <h4>Interactive Heat Treatment Phase & Hardness Simulator</h4>
@@ -3506,7 +3485,7 @@
             </div>
           </div>
 
-          <div class="subtab-content" id="exp8-viva">
+          <div class="subtab-content" id="exp8-viva" style="display: none !important;">
             <div class="viva-header-bar">
               <span class="viva-count">10 High-Yield Viva Voce Questions</span>
               <button class="btn-sm toggle-all-viva" data-parent="exp8-viva">Expand All Answers</button>
@@ -3671,6 +3650,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

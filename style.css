@@ -764,8 +764,13 @@ body.theme-light .moon-icon { display: block; }
   border-radius: var(--radius-lg);
   padding: 0.35rem;
   margin-bottom: 1.75rem;
-  overflow-x: auto;
-  scrollbar-width: none;
+  max-width: 490px;
+  width: 100%;
+}
+
+.sim-embedded-section {
+  display: block;
+  margin-top: 2rem;
 }
 
 .subtabs-bar::-webkit-scrollbar {
