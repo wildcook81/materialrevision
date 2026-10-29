@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
   <script>
     MathJax = {
       tex: {
@@ -239,6 +239,7 @@
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp1-procedure">How to Perform</button>
             <button class="subtab-btn" data-target="exp1-theory">Principle & Microstructures</button>
+            <button class="subtab-btn" data-target="exp1-sim">&#128300; Virtual Microscope</button>
             <button class="subtab-btn" data-target="exp1-calc">Observation & Calculator</button>
             <button class="subtab-btn" data-target="exp1-viva">Viva Voce Questions (10)</button>
           </div>
@@ -389,6 +390,133 @@
           </div>
 
           <!-- Tab Content: Observation & Calculator -->
+          
+          <!-- Tab Content: Virtual Metallurgical Microscope Simulator -->
+          <div class="subtab-content" id="exp1-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">INTERACTIVE SIMULATOR</span>
+                  <h3>Optical Metallurgical Microscope &amp; Grain Morphology</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp1-sample-select">Specimen:</label>
+                  <select id="exp1-sample-select" class="sim-select">
+                    <option value="mild-steel">0.2% C Mild Steel (Ferrite + Pearlite)</option>
+                    <option value="eutectoid">0.8% C Eutectoid Steel (100% Lamellar Pearlite)</option>
+                    <option value="martensite">Water-Quenched Steel (Acicular Martensite)</option>
+                    <option value="gray-iron">Gray Cast Iron (Flake Graphite in Ferrite)</option>
+                    <option value="ductile-iron">Ductile Iron (Nodular Spheroids)</option>
+                    <option value="brass">Alpha-Beta Brass (Dual Phase Crystals)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="sim-viewport-layout">
+                <!-- Eyepiece Viewport -->
+                <div class="microscope-viewport-box">
+                  <div class="eyepiece-rim">
+                    <canvas id="microscopeCanvas" width="460" height="460" class="microscope-canvas"></canvas>
+                    <div id="reticleOverlay" class="reticle-grid" style="display: none;"></div>
+                    <div class="scale-bar-overlay" id="microscopeScaleBar">
+                      <span id="scaleBarLabel">50 µm</span>
+                      <div class="scale-bar-line"></div>
+                    </div>
+                  </div>
+                  <div class="eyepiece-label">Vertical Reflected Light Optical Field (10X Eyepiece)</div>
+                </div>
+
+                <!-- Controls & Intelligence Panel -->
+                <div class="sim-controls-panel">
+                  <div class="control-group">
+                    <label class="control-label">Objective Lens Turret</label>
+                    <div class="turret-buttons" id="exp1-turret">
+                      <button class="turret-btn active" data-mag="100">10X (100X Total)</button>
+                      <button class="turret-btn" data-mag="400">40X (400X Total)</button>
+                      <button class="turret-btn" data-mag="1000">100X Oil (1000X)</button>
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Optical Focus Knob</span>
+                      <span id="focusValText" class="slider-val-tag">Sharp (100%)</span>
+                    </div>
+                    <input type="range" id="exp1-focus-slider" min="0" max="100" value="85" class="sim-slider">
+                    <span class="slider-hint">Defocus or bring grain boundaries &amp; lamellae into crisp focus</span>
+                  </div>
+
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Aperture / Field Illumination</span>
+                      <span id="lightValText" class="slider-val-tag">85%</span>
+                    </div>
+                    <input type="range" id="exp1-light-slider" min="30" max="100" value="85" class="sim-slider">
+                  </div>
+
+                  <div class="toggle-group">
+                    <label class="sim-toggle-item">
+                      <input type="checkbox" id="exp1-reticle-toggle">
+                      <span class="toggle-text">Show ASTM E112 Grain Size Reticle Grid</span>
+                    </label>
+                  </div>
+
+                  <!-- Specimen Intel Card -->
+                  <div class="specimen-intel-card" id="specimenIntelCard">
+                    <div class="intel-header">
+                      <span class="intel-tag" id="intelTagPhase">FERRITE + PEARLITE</span>
+                      <h4 id="intelTitle">0.2% C Hypoeutectoid Mild Steel</h4>
+                    </div>
+                    <p id="intelDesc">Light polygonal matrix represents soft, ductile alpha-ferrite (&alpha;). The dark etched colonies are lamellar pearlite (&alpha; + Fe&#8323;C) formed by eutectoid decomposition at 727&deg;C.</p>
+                    <div class="intel-specs">
+                      <div><span>Estimated Hardness:</span> <strong id="intelHardness">130&ndash;150 HV</strong></div>
+                      <div><span>Recommended Etchant:</span> <strong id="intelEtchant">2% Nital (10 sec)</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical Preparation Flow Blueprint -->
+            <div class="blueprint-card">
+              <div class="blueprint-header">
+                <span class="sim-badge">METALLURGICAL PROTOCOL</span>
+                <h3>Standard Metallographic Grinding &amp; Polishing Flow Sequence</h3>
+              </div>
+              <div class="prep-flow-grid">
+                <div class="flow-step">
+                  <div class="flow-num">1</div>
+                  <h5>Sectioning</h5>
+                  <p>Abrasive wet wheel with coolant flood (&lt;100&deg;C to prevent tempering)</p>
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step">
+                  <div class="flow-num">2</div>
+                  <h5>Mounting</h5>
+                  <p>Bakelite resin hot compression mounting @ 150&deg;C, 25 MPa</p>
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step">
+                  <div class="flow-num">3</div>
+                  <h5>Grinding</h5>
+                  <p>SiC papers: 240 &rarr; 400 &rarr; 600 &rarr; 800 &rarr; 1200 grit (rotate 90&deg; each stage)</p>
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step">
+                  <div class="flow-num">4</div>
+                  <h5>Cloth Polishing</h5>
+                  <p>Velvet wheel with 1 &micro;m &amp; 0.05 &micro;m alumina (&alpha;-Al&#8322;O&#8323;) suspension to mirror finish</p>
+                </div>
+                <div class="flow-arrow">&rarr;</div>
+                <div class="flow-step">
+                  <div class="flow-num">5</div>
+                  <h5>Chemical Etch</h5>
+                  <p>2% Nital swab 10&ndash;15s, immediate alcohol rinse, hot forced-air dry</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="subtab-content" id="exp1-calc">
             <div class="calc-panel">
               <div class="calc-header">
@@ -725,6 +853,100 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: Virtual UTM Tensile Test Simulator -->
+          <div class="subtab-content" id="exp2-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">REAL-TIME SIMULATOR</span>
+                  <h3>Universal Testing Machine (UTM) Tensile Test &amp; Stress-Strain</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp2-mat-select">Material:</label>
+                  <select id="exp2-mat-select" class="sim-select">
+                    <option value="mild-steel">Mild Steel (IS 2062) &mdash; Pronounced Yield Plateau</option>
+                    <option value="al-6061">Aluminium 6061-T6 &mdash; Continuous Yield (0.2% Offset)</option>
+                    <option value="cast-iron">Gray Cast Iron &mdash; Linear Brittle Cleavage</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="utm-sim-layout">
+                <!-- Machine Canvas -->
+                <div class="utm-machine-col">
+                  <div class="machine-frame-wrap">
+                    <canvas id="utmMachineCanvas" width="280" height="420" class="utm-canvas"></canvas>
+                    <div class="gauge-readout-hud">
+                      <div>Elongation: <strong id="hudDisp">0.00 mm</strong></div>
+                      <div>Load: <strong id="hudForce">0.00 kN</strong></div>
+                    </div>
+                  </div>
+                  <div class="machine-ctrl-strip">
+                    <button id="utmStartBtn" class="sim-action-btn primary">&#9654; Start Tensile Pull</button>
+                    <button id="utmResetBtn" class="sim-action-btn secondary">&#8635; Reset Test</button>
+                  </div>
+                </div>
+
+                <!-- Real-time Stress-Strain Curve Plotter -->
+                <div class="utm-graph-col">
+                  <div class="graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title">Engineering Stress-Strain Curve (&sigma; vs &epsilon;)</span>
+                      <span class="live-phase-tag" id="utmPhaseTag">READY TO PULL</span>
+                    </div>
+                    <canvas id="utmGraphCanvas" width="540" height="340" class="graph-canvas"></canvas>
+                  </div>
+
+                  <!-- Live mechanical properties tracker -->
+                  <div class="utm-props-grid">
+                    <div class="utm-prop-item">
+                      <span>Engineering Stress (&sigma;)</span>
+                      <strong id="utmStressVal">0.0 MPa</strong>
+                    </div>
+                    <div class="utm-prop-item">
+                      <span>Engineering Strain (&epsilon;)</span>
+                      <strong id="utmStrainVal">0.0000</strong>
+                    </div>
+                    <div class="utm-prop-item">
+                      <span>Yield Strength (&sigma;<sub>y</sub>)</span>
+                      <strong id="utmYieldVal">&mdash;</strong>
+                    </div>
+                    <div class="utm-prop-item">
+                      <span>UTS (&sigma;<sub>u</sub>)</span>
+                      <strong id="utmUtsVal">&mdash;</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ASTM E8 Dogbone Specimen Blueprint Diagram -->
+            <div class="blueprint-card">
+              <div class="blueprint-header">
+                <span class="sim-badge">STANDARD BLUEPRINT</span>
+                <h3>ASTM E8 / E8M Standard Cylindrical Tensile Specimen Geometry</h3>
+              </div>
+              <div class="dogbone-schematic-wrap">
+                <svg viewBox="0 0 760 170" class="schematic-svg" fill="none" stroke="currentColor">
+                  <path d="M 40 45 L 180 45 Q 220 45 235 65 L 525 65 Q 540 45 580 45 L 720 45 L 720 125 L 580 125 Q 540 125 525 105 L 235 105 Q 220 125 180 125 L 40 125 Z" fill="rgba(59, 130, 246, 0.08)" stroke="#3b82f6" stroke-width="2.2"/>
+                  <line x1="20" y1="85" x2="740" y2="85" stroke="rgba(255,255,255,0.3)" stroke-dasharray="8 4" stroke-width="1.2"/>
+                  <circle cx="260" cy="85" r="3.5" fill="#10b981"/>
+                  <circle cx="500" cy="85" r="3.5" fill="#10b981"/>
+                  <line x1="260" y1="145" x2="500" y2="145" stroke="#10b981" stroke-width="1.5"/>
+                  <line x1="260" y1="95" x2="260" y2="152" stroke="#10b981" stroke-width="1" stroke-dasharray="3 3"/>
+                  <line x1="500" y1="95" x2="500" y2="152" stroke="#10b981" stroke-width="1" stroke-dasharray="3 3"/>
+                  <text x="380" y="140" fill="#10b981" font-size="12" font-family="'JetBrains Mono', monospace" font-weight="700" text-anchor="middle">Gauge Length G = 50 &plusmn; 0.1 mm (4 &times; D)</text>
+                  <line x1="230" y1="65" x2="230" y2="105" stroke="#60a5fa" stroke-width="1.5"/>
+                  <text x="215" y="89" fill="#60a5fa" font-size="11" font-family="'JetBrains Mono', monospace" font-weight="700" text-anchor="end">D = 12.5 mm</text>
+                  <line x1="30" y1="45" x2="30" y2="125" stroke="#94a3b8" stroke-width="1.5"/>
+                  <text x="25" y="89" fill="#94a3b8" font-size="11" font-family="'JetBrains Mono', monospace" text-anchor="end">&Oslash;20 mm</text>
+                  <text x="565" y="55" fill="#f59e0b" font-size="11" font-family="'JetBrains Mono', monospace">Transition Radius R &ge; 10 mm</text>
+                </svg>
               </div>
             </div>
           </div>
@@ -1410,6 +1632,100 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: Virtual Charpy Impact Simulator -->
+          <div class="subtab-content" id="exp4-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">PHYSICS SIMULATOR</span>
+                  <h3>Charpy Impact Pendulum &amp; DBTT Transition Simulator</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp4-temp-slider">Specimen Temperature:</label>
+                  <span id="exp4-temp-val" class="slider-val-tag">20 &deg;C (Room Temp)</span>
+                </div>
+              </div>
+
+              <div class="charpy-sim-layout">
+                <!-- Pendulum Canvas -->
+                <div class="charpy-machine-col">
+                  <div class="pendulum-viewport-wrap">
+                    <canvas id="charpyCanvas" width="380" height="380" class="charpy-canvas"></canvas>
+                    <div class="energy-dial-badge">
+                      <span>Energy Absorbed (K<sub>v</sub>):</span>
+                      <strong id="charpyEnergyDial">0.0 J</strong>
+                    </div>
+                  </div>
+                  <div class="machine-ctrl-strip">
+                    <button id="charpyReleaseBtn" class="sim-action-btn primary">&#9879; Release Pendulum Striker</button>
+                    <button id="charpyResetBtn" class="sim-action-btn secondary">&#8635; Reload Pendulum</button>
+                  </div>
+                </div>
+
+                <!-- DBTT Curve & Fracture Analysis -->
+                <div class="charpy-analytics-col">
+                  <div class="temp-control-card">
+                    <label class="control-label">Test Temperature Controller (&deg;C)</label>
+                    <input type="range" id="exp4-temp-slider" min="-60" max="100" value="20" step="5" class="sim-slider">
+                    <div class="temp-scale-marks">
+                      <span>-60&deg;C (Liquid N&sub2; chilled)</span>
+                      <span>0&deg;C (Ice)</span>
+                      <span>20&deg;C</span>
+                      <span>+100&deg;C (Boiling)</span>
+                    </div>
+                  </div>
+
+                  <div class="dbtt-graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title">Ductile-to-Brittle Transition Temperature (DBTT) S-Curve</span>
+                      <span class="live-phase-tag" id="charpyModeTag">TRANSITION ZONE</span>
+                    </div>
+                    <canvas id="dbttGraphCanvas" width="480" height="230" class="graph-canvas"></canvas>
+                  </div>
+
+                  <!-- Fracture Face Morphology -->
+                  <div class="fracture-morph-card">
+                    <div class="morph-item">
+                      <span>Fracture Appearance:</span>
+                      <strong id="charpyFractureType">Mixed (60% Shear Lips / 40% Cleavage)</strong>
+                    </div>
+                    <div class="morph-item">
+                      <span>Lateral Expansion:</span>
+                      <strong id="charpyLateralExp">1.15 mm</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charpy Specimen Blueprint -->
+            <div class="blueprint-card">
+              <div class="blueprint-header">
+                <span class="sim-badge">ASTM E23 SPECIFICATION</span>
+                <h3>Standard Charpy 45&deg; V-Notch Test Coupon Geometry</h3>
+              </div>
+              <div class="charpy-schematic-wrap">
+                <svg viewBox="0 0 680 140" class="schematic-svg" fill="none" stroke="currentColor">
+                  <!-- 55x10x10 Specimen -->
+                  <rect x="50" y="30" width="580" height="80" rx="3" fill="rgba(59, 130, 246, 0.08)" stroke="#3b82f6" stroke-width="2"/>
+                  <!-- V-Notch: centered at x=340, 2mm deep, 45 deg -->
+                  <polygon points="325,30 355,30 340,55" fill="var(--c-bg)" stroke="#3b82f6" stroke-width="2"/>
+                  <!-- Anvil Supports -->
+                  <polygon points="120,110 140,110 130,125" fill="#f59e0b"/>
+                  <polygon points="540,110 560,110 550,125" fill="#f59e0b"/>
+                  <!-- Dimensions -->
+                  <line x1="50" y1="125" x2="630" y2="125" stroke="#94a3b8" stroke-width="1.2"/>
+                  <text x="340" y="137" fill="#94a3b8" font-size="11" font-family="'JetBrains Mono', monospace" text-anchor="middle">Length = 55 mm</text>
+                  <text x="340" y="24" fill="#60a5fa" font-size="11" font-family="'JetBrains Mono', monospace" font-weight="700" text-anchor="middle">45&deg; V-Notch (2 mm deep, 0.25 mm root radius)</text>
+                  <!-- Striker Direction -->
+                  <line x1="340" y1="105" x2="340" y2="75" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrow)"/>
+                  <text x="340" y="98" fill="#ef4444" font-size="10" font-family="'JetBrains Mono', monospace" font-weight="700" text-anchor="start"> Striker Impact Point</text>
+                </svg>
               </div>
             </div>
           </div>
@@ -2465,6 +2781,87 @@
             </div>
           </div>
 
+          
+          <!-- Tab Content: Virtual Vickers Hardness Simulator -->
+          <div class="subtab-content" id="exp7-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">MICRO-HARDNESS SIMULATOR</span>
+                  <h3>Vickers Diamond Pyramid Indentation &amp; Optical Sizing</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp7-mat-select">Material Sample:</label>
+                  <select id="exp7-mat-select" class="sim-select">
+                    <option value="mild-steel">Annealed Mild Steel (~135 HV)</option>
+                    <option value="quenched-steel">Quenched Tool Steel (~720 HV)</option>
+                    <option value="brass">Cartridge Brass Cu-30Zn (~95 HV)</option>
+                    <option value="al-alloy">Aluminium 7075-T6 (~160 HV)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="vickers-sim-layout">
+                <!-- Optical Eyepiece with Diagonal Caliper Lines -->
+                <div class="vickers-optical-col">
+                  <div class="vickers-viewport-wrap">
+                    <canvas id="vickersCanvas" width="420" height="420" class="vickers-canvas"></canvas>
+                    <div class="vickers-diag-overlay">
+                      <div class="diag-item">d<sub>1</sub> (Horizontal): <strong id="vickersD1Read">0.368 mm</strong></div>
+                      <div class="diag-item">d<sub>2</sub> (Vertical): <strong id="vickersD2Read">0.366 mm</strong></div>
+                      <div class="diag-item highlight">Mean d: <strong id="vickersDMeanRead">0.367 mm</strong></div>
+                    </div>
+                  </div>
+                  <div class="eyepiece-label">136&deg; Diamond Pyramid Impression under 100X Optical Eyepiece</div>
+                </div>
+
+                <!-- Load & Measurement Controls -->
+                <div class="vickers-controls-col">
+                  <div class="control-group">
+                    <label class="control-label">Applied Test Load (P)</label>
+                    <div class="load-pill-buttons" id="exp7-load-pills">
+                      <button class="load-btn active" data-load="10">10 kgf (98.07 N)</button>
+                      <button class="load-btn" data-load="30">30 kgf (294.2 N)</button>
+                      <button class="load-btn" data-load="5">5 kgf (49.03 N)</button>
+                      <button class="load-btn" data-load="1">1 kgf (Micro)</button>
+                    </div>
+                  </div>
+
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Optical Caliper Line 1 (Horizontal)</span>
+                      <span id="d1SliderVal" class="slider-val-tag">Adjust</span>
+                    </div>
+                    <input type="range" id="exp7-d1-slider" min="50" max="350" value="184" class="sim-slider">
+                  </div>
+
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Optical Caliper Line 2 (Vertical)</span>
+                      <span id="d2SliderVal" class="slider-val-tag">Adjust</span>
+                    </div>
+                    <input type="range" id="exp7-d2-slider" min="50" max="350" value="183" class="sim-slider">
+                  </div>
+
+                  <!-- Live Vickers Hardness Calculation Output -->
+                  <div class="vickers-calc-card">
+                    <div class="vh-formula-display">
+                      <span>HV = 1.8544 &times; (P / d&sup2;)</span>
+                    </div>
+                    <div class="vh-main-readout">
+                      <span class="vh-label">Vickers Hardness Number:</span>
+                      <strong id="vickersLiveHV">137.6 HV10</strong>
+                    </div>
+                    <div class="vh-equiv-grid">
+                      <div>Estimated Brinell: <strong id="vickersEquivBHN">~131 HBW</strong></div>
+                      <div>Estimated Rockwell B: <strong id="vickersEquivHRB">~75 HRB</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="subtab-content" id="exp7-calc">
             <div class="calc-panel">
               <div class="calc-header">
@@ -3007,6 +3404,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
