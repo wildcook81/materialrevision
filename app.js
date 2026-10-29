@@ -25,11 +25,103 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('theme-dark')) {
       document.body.classList.replace('theme-dark', 'theme-light');
       localStorage.setItem('matlab_theme', 'theme-light');
+      const m = document.getElementById('themeColorMeta');
+      if (m) m.setAttribute('content', '#f8fafc');
     } else {
       document.body.classList.replace('theme-light', 'theme-dark');
       localStorage.setItem('matlab_theme', 'theme-dark');
+      const m = document.getElementById('themeColorMeta');
+      if (m) m.setAttribute('content', '#0a0f1d');
     }
   });
+
+  // =========================================================================
+  // Mobile Sidebar Drawer (hamburger + backdrop + swipe-to-close)
+  // =========================================================================
+  const sidebar         = document.getElementById('sidebar');
+  const backdrop        = document.getElementById('sidebarBackdrop');
+  const mobileMenuBtn   = document.getElementById('mobileMenuBtn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden'; // prevent background scroll
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+    if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+  }
+
+  // Tap backdrop to close
+  if (backdrop) {
+    backdrop.addEventListener('click', closeSidebar);
+  }
+
+  // Swipe left on sidebar to close (touch gesture)
+  if (sidebar) {
+    let touchStartX = 0;
+    sidebar.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    sidebar.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (dx < -60) closeSidebar(); // swiped left
+    }, { passive: true });
+  }
+
+  // Auto-reset on resize to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1024) closeSidebar();
+  });
+
+  // =========================================================================
+  // Mobile Search Bar Toggle
+  // =========================================================================
+  const mobileSearchToggleBtn = document.getElementById('mobileSearchToggleBtn');
+  const mobileSearchBar       = document.getElementById('mobileSearchBar');
+  const mobileSearchInput     = document.getElementById('mobileSearchInput');
+  const clearMobileSearchBtn  = document.getElementById('clearMobileSearchBtn');
+
+  if (mobileSearchToggleBtn && mobileSearchBar) {
+    mobileSearchToggleBtn.addEventListener('click', () => {
+      mobileSearchBar.classList.toggle('active');
+      if (mobileSearchBar.classList.contains('active') && mobileSearchInput) {
+        mobileSearchInput.focus();
+      }
+    });
+  }
+
+  if (mobileSearchInput) {
+    mobileSearchInput.addEventListener('input', () => {
+      const q = mobileSearchInput.value.trim().toLowerCase();
+      clearMobileSearchBtn.style.display = q ? 'block' : 'none';
+      if (q.length > 1) performSearch(q);
+      else {
+        const sp = document.getElementById('searchResultsSection');
+        if (sp) sp.style.display = 'none';
+      }
+    });
+  }
+
+  if (clearMobileSearchBtn) {
+    clearMobileSearchBtn.addEventListener('click', () => {
+      mobileSearchInput.value = '';
+      clearMobileSearchBtn.style.display = 'none';
+      const sp = document.getElementById('searchResultsSection');
+      if (sp) sp.style.display = 'none';
+      mobileSearchInput.focus();
+    });
+  }
 
   // =========================================================================
   // Navigation: Sidebar Experiment Switching
@@ -86,6 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.MathJax && window.MathJax.typesetPromise) {
       window.MathJax.typesetPromise();
     }
+
+    // Auto-close sidebar drawer on mobile after user picks an experiment
+    if (window.innerWidth <= 1024) closeSidebar();
   }
 
   // =========================================================================

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0f1d" id="themeColorMeta">
   <title>MatLab Pro — Materials Science & Testing Lab Companion</title>
   <meta name="description" content="Complete practical guide, step-by-step procedures, interactive calculators, and comprehensive viva voce question bank for Materials Science & Mechanical Testing Lab experiments.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +32,14 @@
   <!-- Top Navigation Header -->
   <header class="app-header">
     <div class="header-left">
+      <!-- Hamburger -- auto-shown on phones and tablets -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open experiment menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
       <div class="logo-box">
         <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
           <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2.5" opacity="0.2"/>
@@ -56,6 +65,10 @@
     </div>
 
     <div class="header-right">
+      <!-- Mobile search toggle -->
+      <button id="mobileSearchToggleBtn" class="nav-action-btn icon-only mobile-search-toggle" title="Search" style="display:none;">
+        <svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+      </button>
       <button id="quizModeBtn" class="nav-action-btn quiz-btn" title="Practice Viva Flashcards">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
         <span>Viva Quiz Mode</span>
@@ -69,6 +82,20 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile Search Bar (slides down below header on phones) -->
+  <div class="mobile-search-bar" id="mobileSearchBar">
+    <div class="search-wrapper">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+      </svg>
+      <input type="text" id="mobileSearchInput" placeholder="Search experiments, viva questions, formulas..." autocomplete="off">
+      <button id="clearMobileSearchBtn" class="clear-btn" style="display:none;">&times;</button>
+    </div>
+  </div>
+
+  <!-- Sidebar backdrop overlay (tap to close on mobile) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- Main Container with Sidebar + Content -->
   <div class="layout-container">
