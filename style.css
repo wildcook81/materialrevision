@@ -2470,6 +2470,73 @@ body.theme-light .alert-tip {
   }
 }
 
+/* ── 17. Scientific Graph Studios ───────────────────────────── */
+.graph-studio-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.85rem;
+  align-items: start;
+}
+
+.graph-canvas-container {
+  background: var(--c-surface);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.4rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.graph-results-card {
+  background: var(--c-surface);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  color: var(--txt-secondary);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--bdr-light);
+}
+
+.result-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.result-row strong {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--txt-primary);
+}
+
+.result-row.highlight strong {
+  color: #60a5fa;
+  font-size: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .graph-studio-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Print Stylesheet */
 @media print {
   .app-header, .sidebar, .subtabs-bar, .mobile-search-bar, .checklist-card, .quiz-btn, #printBtn, #themeToggleBtn {

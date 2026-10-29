@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
   <script>
     MathJax = {
       tex: {
@@ -1171,6 +1171,7 @@
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp3-procedure">How to Perform</button>
             <button class="subtab-btn" data-target="exp3-theory">Polymer Chemistry & Physics</button>
+            <button class="subtab-btn" data-target="exp3-sim">&#128202; Rule of Mixtures Graph</button>
             <button class="subtab-btn" data-target="exp3-calc">Batch Mixing Calculator</button>
             <button class="subtab-btn" data-target="exp3-viva">Viva Voce Questions (10)</button>
           </div>
@@ -1298,6 +1299,71 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: Rule of Mixtures Graph Studio -->
+          <div class="subtab-content" id="exp3-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">COMPOSITE MECHANICS GRAPH</span>
+                  <h3>Rule of Mixtures &amp; Anisotropic Modulus vs. Fiber Volume Fraction (V<sub>f</sub>)</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp3-fiber-select">Reinforcement Fiber:</label>
+                  <select id="exp3-fiber-select" class="sim-select">
+                    <option value="e-glass">E-Glass Fiber (E = 72.4 GPa, σ = 3400 MPa)</option>
+                    <option value="carbon">Standard Carbon Fiber (E = 230 GPa, σ = 4500 MPa)</option>
+                    <option value="aramid">Kevlar 49 Aramid (E = 125 GPa, σ = 3600 MPa)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="graph-studio-layout">
+                <div class="graph-canvas-container">
+                  <div class="graph-top-info">
+                    <span class="graph-title">Elastic Modulus Bounds (Voigt Upper Bound E<sub>1</sub> vs. Reuss Lower Bound E<sub>2</sub>)</span>
+                    <span class="live-phase-tag" id="exp3VfTag">V<sub>f</sub> = 40% (Optimum Hand Lay-up)</span>
+                  </div>
+                  <canvas id="exp3GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                </div>
+
+                <div class="graph-controls-panel">
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Fiber Volume Fraction (V<sub>f</sub>)</span>
+                      <strong id="exp3VfVal" class="slider-val-tag">40%</strong>
+                    </div>
+                    <input type="range" id="exp3-vf-slider" min="0" max="75" value="40" step="1" class="sim-slider">
+                    <span class="slider-hint">Hand lay-up practical limit is ~40-50%; Autoclave reaches 65-70%</span>
+                  </div>
+
+                  <div class="graph-results-card">
+                    <div class="result-row">
+                      <span>Longitudinal Modulus (E<sub>1</sub>):</span>
+                      <strong id="exp3E1Val">31.0 GPa</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Transverse Modulus (E<sub>2</sub>):</span>
+                      <strong id="exp3E2Val">5.5 GPa</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Anisotropic Ratio (E<sub>1</sub> / E<sub>2</sub>):</span>
+                      <strong id="exp3RatioVal">5.64</strong>
+                    </div>
+                    <div class="result-row highlight">
+                      <span>Critical Fraction (V<sub>crit</sub>):</span>
+                      <strong id="exp3VcritVal">~3.8%</strong>
+                    </div>
+                  </div>
+
+                  <div class="tip-box alert-info">
+                    <strong>Lab Practical Insight:</strong> If $V_f < V_{crit}$, adding fibers actually weakens the composite because broken fibers create voids without bearing enough load to reinforce the matrix.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1938,6 +2004,7 @@
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp5-procedure">How to Perform</button>
             <button class="subtab-btn" data-target="exp5-theory">Vernier Principles & Fracture Zones</button>
+            <button class="subtab-btn" data-target="exp5-sim">&#128202; ASTM E399 P-CMOD Graph</button>
             <button class="subtab-btn" data-target="exp5-calc">Vernier Reading & 3-Point Average</button>
             <button class="subtab-btn" data-target="exp5-viva">Viva Voce Questions (10)</button>
           </div>
@@ -2070,6 +2137,75 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: ASTM E399 Load vs CMOD Graph Studio -->
+          <div class="subtab-content" id="exp5-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">ASTM E399 FRACTURE GRAPH</span>
+                  <h3>Load (P) vs. Crack Mouth Opening Displacement (CMOD) &amp; P<sub>Q</sub> Secant</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp5-specimen-type">CT Specimen State:</label>
+                  <select id="exp5-specimen-type" class="sim-select">
+                    <option value="type1">Type I: Linear to Pop-In &amp; Brittle Fracture</option>
+                    <option value="type2">Type II: Non-Linear Plastic Yield with Stable Tear</option>
+                    <option value="type3">Type III: Valid ASTM E399 Standard Secant Intersection</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="graph-studio-layout">
+                <div class="graph-canvas-container">
+                  <div class="graph-top-info">
+                    <span class="graph-title">P vs. CMOD with 5% Secant Compliance Line (S<sub>5</sub> = 0.95 &times; S<sub>0</sub>)</span>
+                    <span class="live-phase-tag" id="exp5ValidityTag">VALID PLANE STRAIN TEST</span>
+                  </div>
+                  <canvas id="exp5GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                </div>
+
+                <div class="graph-controls-panel">
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Applied Test Load (P)</span>
+                      <strong id="exp5LoadSliderVal" class="slider-val-tag">14.8 kN</strong>
+                    </div>
+                    <input type="range" id="exp5-load-slider" min="0" max="100" value="75" class="sim-slider">
+                    <span class="slider-hint">Move slider to simulate clip gauge knife-edge deflection</span>
+                  </div>
+
+                  <div class="graph-results-card">
+                    <div class="result-row">
+                      <span>Initial Slope (S<sub>0</sub>):</span>
+                      <strong id="exp5S0Val">62.5 kN/mm</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>5% Secant Slope (S<sub>5</sub>):</span>
+                      <strong id="exp5S5Val">59.4 kN/mm</strong>
+                    </div>
+                    <div class="result-row highlight">
+                      <span>Secant Load (P<sub>Q</sub>):</span>
+                      <strong id="exp5PqVal">13.2 kN</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>P<sub>max</sub> / P<sub>Q</sub> Ratio:</span>
+                      <strong id="exp5RatioVal">1.08 (&le; 1.10 Pass)</strong>
+                    </div>
+                    <div class="result-row highlight">
+                      <span>Plane-Strain K<sub>IC</sub>:</span>
+                      <strong id="exp5KicVal">29.4 MPa&radic;m</strong>
+                    </div>
+                  </div>
+
+                  <div class="tip-box alert-tip">
+                    <strong>ASTM E399 Rule:</strong> If $P_{max} / P_Q > 1.10$, excessive plastic zone yielding occurred at the crack tip, invalidating linear elastic fracture mechanics (LEFM).
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2296,6 +2432,7 @@
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp6-procedure">How to Perform</button>
             <button class="subtab-btn" data-target="exp6-theory">Mechanics & S-N Analysis</button>
+            <button class="subtab-btn" data-target="exp6-sim">&#128202; W&ouml;hler S-N Curve Studio</button>
             <button class="subtab-btn" data-target="exp6-calc">Bending Stress & Life Calculator</button>
             <button class="subtab-btn" data-target="exp6-viva">Viva Voce Questions (10)</button>
           </div>
@@ -2426,6 +2563,71 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: Wöhler S-N Curve Studio -->
+          <div class="subtab-content" id="exp6-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">FATIGUE WÖHLER STUDIO</span>
+                  <h3>Stress Amplitude (&sigma;<sub>a</sub>) vs. Number of Cycles to Failure (Log N)</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp6-alloy-select">Material System:</label>
+                  <select id="exp6-alloy-select" class="sim-select">
+                    <option value="mild-steel">Mild Steel (IS 2062) &mdash; Distinct Fatigue Limit (σₑ = 225 MPa)</option>
+                    <option value="alloy-steel">AISI 4340 Alloy Steel &mdash; High Endurance (σₑ = 480 MPa)</option>
+                    <option value="al-7075">Aluminium 7075-T6 &mdash; No True Fatigue Limit (Continuous Drop)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="graph-studio-layout">
+                <div class="graph-canvas-container">
+                  <div class="graph-top-info">
+                    <span class="graph-title">Semi-Log W&ouml;hler S-N Curve with Endurance Limit Plateau</span>
+                    <span class="live-phase-tag" id="exp6LifeStatus">SAFE INFINITE LIFE (N &gt; 10&#8311;)</span>
+                  </div>
+                  <canvas id="exp6GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                </div>
+
+                <div class="graph-controls-panel">
+                  <div class="control-group">
+                    <div class="slider-header">
+                      <span class="control-label">Alternating Stress (&sigma;<sub>a</sub>)</span>
+                      <strong id="exp6StressValText" class="slider-val-tag">210 MPa</strong>
+                    </div>
+                    <input type="range" id="exp6-stress-slider" min="120" max="550" value="210" step="5" class="sim-slider">
+                    <span class="slider-hint">Drag slider to test high-cycle fatigue life vs. infinite endurance</span>
+                  </div>
+
+                  <div class="graph-results-card">
+                    <div class="result-row">
+                      <span>Endurance Limit (&sigma;<sub>e</sub>):</span>
+                      <strong id="exp6EnduranceVal">225 MPa (~0.5 &times; UTS)</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Predicted Life (N):</span>
+                      <strong id="exp6LifeCycles">&infin; Cycles (No Failure)</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Machine Running Time @ 3500 rpm:</span>
+                      <strong id="exp6RunTime">Infinite</strong>
+                    </div>
+                    <div class="result-row highlight">
+                      <span>Basquin's Power Law:</span>
+                      <strong>&sigma;<sub>a</sub> = &sigma;&prime;<sub>f</sub> (2N)<sup>b</sup></strong>
+                    </div>
+                  </div>
+
+                  <div class="tip-box alert-warning">
+                    <strong>Crucial Viva Question:</strong> Ferrous alloys exhibit a true horizontal endurance limit knee due to interstitial carbon/nitrogen pin-locking of dislocations. Non-ferrous alloys (Al, Cu) lack this and continuously lose strength.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -3065,6 +3267,7 @@
           <div class="subtabs-bar">
             <button class="subtab-btn active" data-target="exp8-procedure">How to Perform</button>
             <button class="subtab-btn" data-target="exp8-theory">Phase Transformations & TTT/CCT</button>
+            <button class="subtab-btn" data-target="exp8-sim">&#128202; T-t &amp; Hardness Graphs</button>
             <button class="subtab-btn" data-target="exp8-calc">Phase & Hardness Predictor</button>
             <button class="subtab-btn" data-target="exp8-viva">Viva Voce Questions (10)</button>
           </div>
@@ -3197,6 +3400,70 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- Tab Content: Thermal Processing & Tempering Graph Studio -->
+          <div class="subtab-content" id="exp8-sim">
+            <div class="simulation-card">
+              <div class="sim-header">
+                <div class="sim-header-title">
+                  <span class="sim-badge">HEAT TREATMENT GRAPH STUDIO</span>
+                  <h3>Temperature-Time (T-t) Thermal Cycles &amp; Tempering Hardness Curve</h3>
+                </div>
+                <div class="sim-sample-select-wrap">
+                  <label for="exp8-graph-mode">Graph Display:</label>
+                  <select id="exp8-graph-mode" class="sim-select">
+                    <option value="thermal-cycles">Thermal Cycles: Anneal vs. Normalize vs. Quench (T vs. t)</option>
+                    <option value="tempering-curve">Hardness &amp; Toughness vs. Tempering Temperature</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="graph-studio-layout">
+                <div class="graph-canvas-container">
+                  <div class="graph-top-info">
+                    <span class="graph-title" id="exp8GraphTitle">Complete Heat Treatment Cooling Regimens &amp; Critical Transformation Lines</span>
+                    <span class="live-phase-tag" id="exp8ModeTag">AUSTENITIZING @ 900&deg;C</span>
+                  </div>
+                  <canvas id="exp8GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                </div>
+
+                <div class="graph-controls-panel">
+                  <div class="control-group" id="exp8TemperingSliderGroup" style="display: none;">
+                    <div class="slider-header">
+                      <span class="control-label">Tempering Temperature</span>
+                      <strong id="exp8TempSliderVal" class="slider-val-tag">450 &deg;C</strong>
+                    </div>
+                    <input type="range" id="exp8-temp-slider" min="150" max="650" value="450" step="10" class="sim-slider">
+                    <span class="slider-hint">Observe Martensite relaxation and Carbide precipitation</span>
+                  </div>
+
+                  <div class="graph-results-card" id="exp8ResultsCard">
+                    <div class="result-row">
+                      <span>Annealing (Furnace Cool):</span>
+                      <strong style="color: #60a5fa;">Coarse Pearlite + Ferrite (135 HV)</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Normalizing (Air Cool):</span>
+                      <strong style="color: #34d399;">Fine Pearlite + Refined Grains (175 HV)</strong>
+                    </div>
+                    <div class="result-row">
+                      <span>Water Quenching:</span>
+                      <strong style="color: #f87171;">100% Acicular Martensite (650 HV / 60 HRC)</strong>
+                    </div>
+                    <div class="result-row highlight">
+                      <span>Critical Cooling Rate (CCR):</span>
+                      <strong>&gt; 250 &deg;C/s (Misses Pearlite Nose)</strong>
+                    </div>
+                  </div>
+
+                  <div class="tip-box alert-warning">
+                    <strong>Blue Brittleness / Temper Embrittlement:</strong> Tempering between 250&deg;C&ndash;350&deg;C causes impurity segregation (P, Sb, Sn) to prior austenite grain boundaries, leading to an unexpected catastrophic dip in impact toughness!
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -3404,6 +3671,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

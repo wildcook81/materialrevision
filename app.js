@@ -204,6 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.MathJax && window.MathJax.typesetPromise) {
               window.MathJax.typesetPromise([content]);
             }
+            // Trigger resize to refresh canvas renderers if needed
+            window.dispatchEvent(new Event('resize'));
           } else {
             content.classList.remove('active');
           }
@@ -1951,6 +1953,814 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderVickers();
+  }
+
+
+  // =========================================================================
+  // 18. INTERACTIVE SCIENTIFIC GRAPH STUDIOS
+  // =========================================================================
+
+  // ── Exp 3: Rule of Mixtures Elastic Modulus vs Fiber Fraction Graph ──────
+  initExp3Graph();
+  function initExp3Graph() {
+    const canvas = document.getElementById('exp3GraphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const fiberSelect = document.getElementById('exp3-fiber-select');
+    const vfSlider = document.getElementById('exp3-vf-slider');
+    const vfVal = document.getElementById('exp3VfVal');
+    const vfTag = document.getElementById('exp3VfTag');
+    const e1Val = document.getElementById('exp3E1Val');
+    const e2Val = document.getElementById('exp3E2Val');
+    const ratioVal = document.getElementById('exp3RatioVal');
+    const vcritVal = document.getElementById('exp3VcritVal');
+
+    const fiberProps = {
+      'e-glass': { ef: 72.4, em: 3.4, sf: 3400, sm: 65 },
+      'carbon':  { ef: 230.0, em: 3.4, sf: 4500, sm: 65 },
+      'aramid':  { ef: 125.0, em: 3.4, sf: 3600, sm: 65 }
+    };
+
+    let currentFiber = 'e-glass';
+    let currentVf = 0.40;
+
+    function renderExp3Graph() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const f = fiberProps[currentFiber];
+      const originX = 65;
+      const originY = h - 45;
+      const plotW = w - originX - 30;
+      const plotH = originY - 30;
+
+      const maxE = f.ef * 1.05;
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = originY - (plotH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(originX, y);
+        ctx.lineTo(originX + plotW, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${Math.round((maxE / 5) * i)} GPa`, originX - 8, y + 4);
+      }
+
+      for (let j = 0; j <= 5; j++) {
+        const x = originX + (plotW / 5) * j;
+        ctx.beginPath();
+        ctx.moveTo(x, originY);
+        ctx.lineTo(x, originY - plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${(j * 20)}%`, x, originY + 18);
+      }
+
+      // Axis Titles
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('Fiber Volume Fraction (V_f)', originX + plotW / 2, h - 8);
+
+      ctx.save();
+      ctx.translate(18, originY - plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Composite Modulus (GPa)', 0, 0);
+      ctx.restore();
+
+      // Voigt Upper Bound E1 = Vf * Ef + (1 - Vf) * Em
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(originX, originY - (f.em / maxE) * plotH);
+      ctx.lineTo(originX + plotW, originY - (f.ef / maxE) * plotH);
+      ctx.stroke();
+
+      // Reuss Lower Bound E2 = (Ef * Em) / (Vf * Em + (1 - Vf) * Ef)
+      ctx.strokeStyle = '#a78bfa';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let step = 0; step <= 100; step++) {
+        const vf = step / 100;
+        const e2 = (f.ef * f.em) / (vf * f.em + (1 - vf) * f.ef);
+        const px = originX + vf * plotW;
+        const py = originY - (e2 / maxE) * plotH;
+        if (step === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Current Vf Tracker
+      const curE1 = currentVf * f.ef + (1 - currentVf) * f.em;
+      const curE2 = (f.ef * f.em) / (currentVf * f.em + (1 - currentVf) * f.ef);
+      const curX = originX + currentVf * plotW;
+      const curY1 = originY - (curE1 / maxE) * plotH;
+      const curY2 = originY - (curE2 / maxE) * plotH;
+
+      // Vertical guideline
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(curX, originY);
+      ctx.lineTo(curX, curY1);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dots
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(curX, curY1, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#a78bfa';
+      ctx.beginPath();
+      ctx.arc(curX, curY2, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Legend
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(originX + 15, originY - plotH + 12, 16, 4);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = '10px Plus Jakarta Sans';
+      ctx.textAlign = 'left';
+      ctx.fillText('Voigt Longitudinal Modulus E_1 (Upper Bound)', originX + 38, originY - plotH + 16);
+
+      ctx.fillStyle = '#a78bfa';
+      ctx.fillRect(originX + 15, originY - plotH + 30, 16, 4);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText('Reuss Transverse Modulus E_2 (Lower Bound)', originX + 38, originY - plotH + 34);
+
+      // Calculations
+      const vcrit = ((f.sm - (f.em / f.ef) * f.sm) / (f.sf - (f.em / f.ef) * f.sm)) * 100;
+      if (e1Val) e1Val.textContent = `${curE1.toFixed(1)} GPa`;
+      if (e2Val) e2Val.textContent = `${curE2.toFixed(1)} GPa`;
+      if (ratioVal) ratioVal.textContent = `${(curE1 / curE2).toFixed(2)}`;
+      if (vcritVal) vcritVal.textContent = `~${vcrit.toFixed(1)}%`;
+      if (vfVal) vfVal.textContent = `${Math.round(currentVf * 100)}%`;
+      if (vfTag) vfTag.textContent = `V_f = ${Math.round(currentVf * 100)}% (${currentVf <= 0.45 ? 'Hand Lay-up' : 'Autoclave / Vacuum Prepreg'})`;
+    }
+
+    if (fiberSelect) {
+      fiberSelect.addEventListener('change', () => {
+        currentFiber = fiberSelect.value;
+        renderExp3Graph();
+      });
+    }
+
+    if (vfSlider) {
+      vfSlider.addEventListener('input', () => {
+        currentVf = parseInt(vfSlider.value, 10) / 100;
+        renderExp3Graph();
+      });
+    }
+
+    renderExp3Graph();
+  }
+
+  // ── Exp 5: ASTM E399 Load vs CMOD Secant Line Graph ─────────────────────
+  initExp5Graph();
+  function initExp5Graph() {
+    const canvas = document.getElementById('exp5GraphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const typeSelect = document.getElementById('exp5-specimen-type');
+    const loadSlider = document.getElementById('exp5-load-slider');
+    const sliderVal = document.getElementById('exp5LoadSliderVal');
+    const validityTag = document.getElementById('exp5ValidityTag');
+    const s0Val = document.getElementById('exp5S0Val');
+    const s5Val = document.getElementById('exp5S5Val');
+    const pqVal = document.getElementById('exp5PqVal');
+    const ratioVal = document.getElementById('exp5RatioVal');
+    const kicVal = document.getElementById('exp5KicVal');
+
+    let currentType = 'type3';
+    let progress = 0.75; // 0 to 1
+
+    function renderExp5Graph() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const originX = 60;
+      const originY = h - 45;
+      const plotW = w - originX - 30;
+      const plotH = originY - 30;
+
+      const maxP = 22; // kN
+      const maxCMOD = 0.45; // mm
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = originY - (plotH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(originX, y);
+        ctx.lineTo(originX + plotW, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${((maxP / 5) * i).toFixed(1)} kN`, originX - 8, y + 4);
+      }
+
+      for (let j = 0; j <= 5; j++) {
+        const x = originX + (plotW / 5) * j;
+        ctx.beginPath();
+        ctx.moveTo(x, originY);
+        ctx.lineTo(x, originY - plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${((maxCMOD / 5) * j).toFixed(2)}`, x, originY + 18);
+      }
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('Crack Mouth Opening Displacement CMOD (mm)', originX + plotW / 2, h - 8);
+
+      ctx.save();
+      ctx.translate(18, originY - plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Applied Test Load P (kN)', 0, 0);
+      ctx.restore();
+
+      // Slopes
+      const s0 = 62.5; // kN/mm
+      const s5 = s0 * 0.95; // 5% secant slope
+
+      // Initial linear slope line S0 (OB)
+      ctx.strokeStyle = 'rgba(96, 165, 250, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+      const testCMOD = 0.30;
+      ctx.lineTo(originX + (testCMOD / maxCMOD) * plotW, originY - ((testCMOD * s0) / maxP) * plotH);
+      ctx.stroke();
+
+      // 5% Secant line S5 (OA)
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+      const secantCMOD = 0.35;
+      ctx.lineTo(originX + (secantCMOD / maxCMOD) * plotW, originY - ((secantCMOD * s5) / maxP) * plotH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // P vs CMOD Experimental Curve
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.moveTo(originX, originY);
+
+      let pMax = 14.5;
+      let pq = 13.4;
+      const numSteps = 100;
+
+      for (let step = 0; step <= numSteps * progress; step++) {
+        const v = (step / numSteps) * 0.35;
+        let p;
+        if (v <= 0.12) {
+          p = v * s0;
+        } else {
+          // Non-linear bending
+          p = 0.12 * s0 + (v - 0.12) * s0 * 0.65 - Math.pow(v - 0.12, 2) * 95;
+        }
+        if (p > pMax) pMax = p;
+        const px = originX + (v / maxCMOD) * plotW;
+        const py = originY - (p / maxP) * plotH;
+        if (step === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Secant intersection marker (P_Q)
+      const vQ = 0.235;
+      pq = vQ * s5;
+      const pqX = originX + (vQ / maxCMOD) * plotW;
+      const pqY = originY - (pq / maxP) * plotH;
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(pqX, pqY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '11px JetBrains Mono';
+      ctx.fillText(`P_Q = ${pq.toFixed(1)} kN`, pqX + 12, pqY - 8);
+
+      // Pmax marker
+      const vMax = 0.285;
+      const maxPlotX = originX + (vMax / maxCMOD) * plotW;
+      const maxPlotY = originY - (14.6 / maxP) * plotH;
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(maxPlotX, maxPlotY, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ratio
+      const ratio = 14.6 / pq;
+      const isValid = ratio <= 1.10;
+
+      if (validityTag) {
+        validityTag.textContent = isValid ? 'VALID PLANE STRAIN TEST (PASS)' : 'INVALID TEST (EXCESS PLASTICITY)';
+        validityTag.style.background = isValid ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+        validityTag.style.color = isValid ? '#34d399' : '#f87171';
+      }
+
+      if (s0Val) s0Val.textContent = `${s0.toFixed(1)} kN/mm`;
+      if (s5Val) s5Val.textContent = `${s5.toFixed(1)} kN/mm`;
+      if (pqVal) pqVal.textContent = `${pq.toFixed(1)} kN`;
+      if (ratioVal) ratioVal.textContent = `${ratio.toFixed(2)} (${isValid ? '<= 1.10 Pass' : '> 1.10 Fail'})`;
+      if (kicVal) kicVal.textContent = `${(pq * 2.23).toFixed(1)} MPa\u221Am`;
+      if (sliderVal) sliderVal.textContent = `${(progress * 14.6).toFixed(1)} kN`;
+    }
+
+    if (loadSlider) {
+      loadSlider.addEventListener('input', () => {
+        progress = parseInt(loadSlider.value, 10) / 100;
+        renderExp5Graph();
+      });
+    }
+
+    if (typeSelect) {
+      typeSelect.addEventListener('change', () => {
+        currentType = typeSelect.value;
+        renderExp5Graph();
+      });
+    }
+
+    renderExp5Graph();
+  }
+
+  // ── Exp 6: Wöhler S-N Curve Studio ───────────────────────────────────────
+  initExp6Graph();
+  function initExp6Graph() {
+    const canvas = document.getElementById('exp6GraphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const alloySelect = document.getElementById('exp6-alloy-select');
+    const stressSlider = document.getElementById('exp6-stress-slider');
+    const stressValText = document.getElementById('exp6StressValText');
+    const lifeStatus = document.getElementById('exp6LifeStatus');
+    const enduranceVal = document.getElementById('exp6EnduranceVal');
+    const lifeCycles = document.getElementById('exp6LifeCycles');
+    const runTime = document.getElementById('exp6RunTime');
+
+    let currentAlloy = 'mild-steel';
+    let currentStress = 210;
+
+    const alloyData = {
+      'mild-steel':  { se: 225, uts: 460, b: -0.09, hasKnee: true },
+      'alloy-steel': { se: 480, uts: 980, b: -0.08, hasKnee: true },
+      'al-7075':     { se: 160, uts: 570, b: -0.11, hasKnee: false }
+    };
+
+    function renderExp6Graph() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const a = alloyData[currentAlloy];
+      const originX = 65;
+      const originY = h - 45;
+      const plotW = w - originX - 30;
+      const plotH = originY - 30;
+
+      const minLog = 3; // 10^3 cycles
+      const maxLog = 8; // 10^8 cycles
+      const maxS = a.uts * 1.15;
+
+      // Grid (Logarithmic X-axis from 10^3 to 10^8)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let s = 0; s <= 5; s++) {
+        const y = originY - (plotH / 5) * s;
+        ctx.beginPath();
+        ctx.moveTo(originX, y);
+        ctx.lineTo(originX + plotW, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${Math.round((maxS / 5) * s)} MPa`, originX - 8, y + 4);
+      }
+
+      for (let logN = minLog; logN <= maxLog; logN++) {
+        const x = originX + ((logN - minLog) / (maxLog - minLog)) * plotW;
+        ctx.beginPath();
+        ctx.moveTo(x, originY);
+        ctx.lineTo(x, originY - plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(`10^${logN}`, x, originY + 18);
+      }
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Plus Jakarta Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('Cycles to Failure N (Logarithmic Scale)', originX + plotW / 2, h - 8);
+
+      ctx.save();
+      ctx.translate(18, originY - plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Alternating Stress \u03C3_a (MPa)', 0, 0);
+      ctx.restore();
+
+      // Draw Wöhler Curve
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+
+      const kneeLog = 6.0; // 10^6 cycles knee for steel
+      for (let step = 0; step <= 100; step++) {
+        const logVal = minLog + (step / 100) * (maxLog - minLog);
+        let s;
+        if (a.hasKnee && logVal >= kneeLog) {
+          s = a.se; // Flat horizontal plateau!
+        } else {
+          // Basquin curve: S = UTS * 0.9 * (10^(logVal - 3))^b
+          const cyclesRatio = Math.pow(10, logVal - 3);
+          s = Math.max(a.hasKnee ? a.se : 110, (a.uts * 0.88) * Math.pow(cyclesRatio, a.b));
+        }
+        const px = originX + ((logVal - minLog) / (maxLog - minLog)) * plotW;
+        const py = originY - (s / maxS) * plotH;
+        if (step === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Endurance Limit Plateau line (if steel)
+      if (a.hasKnee) {
+        const seY = originY - (a.se / maxS) * plotH;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(originX, seY);
+        ctx.lineTo(originX + plotW, seY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Endurance Limit \u03C3_e = ${a.se} MPa`, originX + 15, seY - 6);
+      }
+
+      // Current Stress Operating Point
+      const curY = originY - (currentStress / maxS) * plotH;
+      let calculatedCycles;
+      const isInfinite = a.hasKnee && currentStress <= a.se;
+
+      if (isInfinite) {
+        calculatedCycles = Infinity;
+      } else {
+        // Invert Basquin: N = 0.5 * (S / (UTS * 0.9))^(1/b) * 10^3
+        const logRatio = Math.log10(currentStress / (a.uts * 0.88)) / a.b;
+        calculatedCycles = Math.min(1e8, Math.max(1e3, Math.pow(10, 3 + logRatio)));
+      }
+
+      // Draw horizontal crosshair for current stress
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(originX, curY);
+      ctx.lineTo(originX + plotW, curY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (!isInfinite) {
+        const curLog = Math.log10(calculatedCycles);
+        const curX = originX + ((curLog - minLog) / (maxLog - minLog)) * plotW;
+
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(curX, curY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Status updates
+      if (stressValText) stressValText.textContent = `${currentStress} MPa`;
+      if (enduranceVal) enduranceVal.textContent = a.hasKnee ? `${a.se} MPa (~0.5 \u00D7 UTS)` : 'None (Continual drop)';
+
+      if (isInfinite) {
+        if (lifeStatus) {
+          lifeStatus.textContent = 'SAFE INFINITE LIFE (N > 10^7)';
+          lifeStatus.style.background = 'rgba(16, 185, 129, 0.15)';
+          lifeStatus.style.color = '#34d399';
+        }
+        if (lifeCycles) lifeCycles.textContent = '\u221E Cycles (No Fatigue Fracture)';
+        if (runTime) runTime.textContent = 'Infinite (Continuous Duty)';
+      } else {
+        if (lifeStatus) {
+          lifeStatus.textContent = 'FINITE FATIGUE LIFE (FATIGUE FAILURE)';
+          lifeStatus.style.background = 'rgba(239, 68, 68, 0.15)';
+          lifeStatus.style.color = '#f87171';
+        }
+        const nSci = calculatedCycles.toExponential(2);
+        if (lifeCycles) lifeCycles.textContent = `${nSci} Cycles`;
+        const minutes = Math.round(calculatedCycles / 3500);
+        if (runTime) runTime.textContent = minutes < 60 ? `${minutes} minutes @ 3500 rpm` : `${(minutes / 60).toFixed(1)} hours`;
+      }
+    }
+
+    if (alloySelect) {
+      alloySelect.addEventListener('change', () => {
+        currentAlloy = alloySelect.value;
+        renderExp6Graph();
+      });
+    }
+
+    if (stressSlider) {
+      stressSlider.addEventListener('input', () => {
+        currentStress = parseInt(stressSlider.value, 10);
+        renderExp6Graph();
+      });
+    }
+
+    renderExp6Graph();
+  }
+
+  // ── Exp 8: Thermal Cycles (T-t) & Tempering Curves Studio ─────────────────
+  initExp8Graph();
+  function initExp8Graph() {
+    const canvas = document.getElementById('exp8GraphCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const modeSelect = document.getElementById('exp8-graph-mode');
+    const graphTitle = document.getElementById('exp8GraphTitle');
+    const modeTag = document.getElementById('exp8ModeTag');
+    const tempSliderGroup = document.getElementById('exp8TemperingSliderGroup');
+    const tempSlider = document.getElementById('exp8-temp-slider');
+    const tempSliderVal = document.getElementById('exp8TempSliderVal');
+    const resultsCard = document.getElementById('exp8ResultsCard');
+
+    let currentMode = 'thermal-cycles';
+    let currentTemp = 450; // °C
+
+    function renderExp8Graph() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const originX = 60;
+      const originY = h - 45;
+      const plotW = w - originX - 30;
+      const plotH = originY - 30;
+
+      if (currentMode === 'thermal-cycles') {
+        // Temperature vs. Time (T vs. t)
+        const maxTemp = 1000; // °C
+
+        // Grid
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 5; i++) {
+          const y = originY - (plotH / 5) * i;
+          ctx.beginPath();
+          ctx.moveTo(originX, y);
+          ctx.lineTo(originX + plotW, y);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px JetBrains Mono';
+          ctx.textAlign = 'right';
+          ctx.fillText(`${(maxTemp / 5) * i} \u00B0C`, originX - 8, y + 4);
+        }
+
+        // Critical Temperature Transformation Lines
+        const criticalLines = [
+          { name: 'Ac3 = 880\u00B0C (Austenite Complete)', temp: 880, color: '#f43f5e' },
+          { name: 'Ac1 = 727\u00B0C (Eutectoid)', temp: 727, color: '#fbbf24' },
+          { name: 'Ms = 380\u00B0C (Martensite Start)', temp: 380, color: '#a78bfa' },
+          { name: 'Mf = 210\u00B0C (Martensite Finish)', temp: 210, color: '#818cf8' }
+        ];
+
+        criticalLines.forEach(line => {
+          const ly = originY - (line.temp / maxTemp) * plotH;
+          ctx.strokeStyle = line.color;
+          ctx.setLineDash([3, 4]);
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(originX, ly);
+          ctx.lineTo(originX + plotW, ly);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = line.color;
+          ctx.font = '9px JetBrains Mono';
+          ctx.textAlign = 'right';
+          ctx.fillText(line.name, originX + plotW - 10, ly - 4);
+        });
+
+        // Common Heating & Soaking Stage (0 to 40% of time)
+        const soakX1 = originX + plotW * 0.25;
+        const soakX2 = originX + plotW * 0.40;
+        const soakY = originY - (900 / maxTemp) * plotH;
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(originX, originY - (25 / maxTemp) * plotH);
+        ctx.lineTo(soakX1, soakY); // Heating
+        ctx.lineTo(soakX2, soakY); // 30 min Soaking
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '10px Plus Jakarta Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText('Austenitizing Soak (900\u00B0C)', (soakX1 + soakX2) / 2, soakY - 10);
+
+        // Curve 1: Water Quenching (Rapid steep drop)
+        ctx.strokeStyle = '#f87171';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(soakX2, soakY);
+        ctx.bezierCurveTo(soakX2 + 15, soakY + 120, soakX2 + 25, originY - 50, soakX2 + 35, originY - (25 / maxTemp) * plotH);
+        ctx.stroke();
+        ctx.fillStyle = '#f87171';
+        ctx.fillText('Water Quench (CCR > 250\u00B0C/s)', soakX2 + 75, originY - 70);
+
+        // Curve 2: Normalizing (Air Cool, Moderate)
+        ctx.strokeStyle = '#34d399';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(soakX2, soakY);
+        ctx.bezierCurveTo(soakX2 + 80, soakY + 60, soakX2 + 140, originY - 120, soakX2 + 180, originY - (25 / maxTemp) * plotH);
+        ctx.stroke();
+        ctx.fillStyle = '#34d399';
+        ctx.fillText('Normalizing (Still Air)', soakX2 + 185, originY - 120);
+
+        // Curve 3: Full Annealing (Furnace Cool, Very Slow)
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(soakX2, soakY);
+        ctx.bezierCurveTo(soakX2 + 120, soakY + 20, soakX2 + 220, soakY + 80, originX + plotW, originY - (150 / maxTemp) * plotH);
+        ctx.stroke();
+        ctx.fillStyle = '#60a5fa';
+        ctx.fillText('Full Annealing (Furnace Cool ~30\u00B0C/h)', originX + plotW - 70, originY - 180);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px Plus Jakarta Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText('Elapsed Processing Time (Hours)', originX + plotW / 2, h - 8);
+      } else {
+        // Tempering Curve: Hardness vs. Tempering Temperature
+        const maxH = 70; // HRC
+        const maxImpact = 160; // Joules
+
+        // Grid
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 5; i++) {
+          const y = originY - (plotH / 5) * i;
+          ctx.beginPath();
+          ctx.moveTo(originX, y);
+          ctx.lineTo(originX + plotW, y);
+          ctx.stroke();
+
+          ctx.fillStyle = '#f87171';
+          ctx.font = '10px JetBrains Mono';
+          ctx.textAlign = 'right';
+          ctx.fillText(`${Math.round((maxH / 5) * i)} HRC`, originX - 8, y + 4);
+        }
+
+        ctx.fillStyle = '#f87171';
+        ctx.font = '11px Plus Jakarta Sans';
+        ctx.save();
+        ctx.translate(18, originY - plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Hardness (HRC)', 0, 0);
+        ctx.restore();
+
+        // X-axis: 100°C to 700°C
+        for (let j = 0; j <= 6; j++) {
+          const x = originX + (plotW / 6) * j;
+          ctx.beginPath();
+          ctx.moveTo(x, originY);
+          ctx.lineTo(x, originY - plotH);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px JetBrains Mono';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${100 + j * 100}\u00B0C`, x, originY + 18);
+        }
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px Plus Jakarta Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tempering Temperature (\u00B0C)', originX + plotW / 2, h - 8);
+
+        // Temper Embrittlement Zone (250°C to 350°C) shaded strip
+        const embrittleX1 = originX + ((250 - 100) / 600) * plotW;
+        const embrittleX2 = originX + ((350 - 100) / 600) * plotW;
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.12)';
+        ctx.fillRect(embrittleX1, originY - plotH, embrittleX2 - embrittleX1, plotH);
+
+        ctx.fillStyle = '#f87171';
+        ctx.font = '10px JetBrains Mono';
+        ctx.fillText('Blue Brittleness Dip', (embrittleX1 + embrittleX2) / 2, originY - plotH + 18);
+
+        // Hardness Curve (monotonically drops)
+        ctx.strokeStyle = '#f87171';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (let t = 100; t <= 700; t += 10) {
+          // As-quenched 64 HRC drops to 22 HRC
+          const hrc = 64 - (42 / (1 + Math.exp(-(t - 420) / 90)));
+          const px = originX + ((t - 100) / 600) * plotW;
+          const py = originY - (hrc / maxH) * plotH;
+          if (t === 100) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        // Toughness Curve (rises with embrittlement dip at 300°C)
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        for (let t = 100; t <= 700; t += 10) {
+          let energy = 15 + ((140) / (1 + Math.exp(-(t - 460) / 75)));
+          // Dip at 300
+          if (t >= 250 && t <= 360) {
+            energy -= 22 * Math.sin(((t - 250) / 110) * Math.PI);
+          }
+          const px = originX + ((t - 100) / 600) * plotW;
+          const py = originY - ((energy / maxImpact) * (maxH / maxH)) * plotH;
+          if (t === 100) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+
+        // Current Marker
+        const curHrc = 64 - (42 / (1 + Math.exp(-(currentTemp - 420) / 90)));
+        const curX = originX + ((currentTemp - 100) / 600) * plotW;
+        const curY = originY - (curHrc / maxH) * plotH;
+
+        ctx.fillStyle = '#f87171';
+        ctx.beginPath();
+        ctx.arc(curX, curY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '11px JetBrains Mono';
+        ctx.fillText(`${curHrc.toFixed(1)} HRC (~${Math.round(curHrc * 10 + 30)} HV)`, curX + 12, curY - 8);
+      }
+    }
+
+    if (modeSelect) {
+      modeSelect.addEventListener('change', () => {
+        currentMode = modeSelect.value;
+        if (currentMode === 'thermal-cycles') {
+          graphTitle.textContent = 'Complete Heat Treatment Cooling Regimens & Critical Transformation Lines';
+          modeTag.textContent = 'AUSTENITIZING @ 900\u00B0C';
+          tempSliderGroup.style.display = 'none';
+        } else {
+          graphTitle.textContent = 'Hardness (HRC) & Impact Toughness vs. Tempering Temperature';
+          modeTag.textContent = 'TEMPERING STAGE';
+          tempSliderGroup.style.display = 'block';
+        }
+        renderExp8Graph();
+      });
+    }
+
+    if (tempSlider) {
+      tempSlider.addEventListener('input', () => {
+        currentTemp = parseInt(tempSlider.value, 10);
+        tempSliderVal.textContent = `${currentTemp} \u00B0C`;
+        renderExp8Graph();
+      });
+    }
+
+    renderExp8Graph();
   }
 
   // =========================================================================
