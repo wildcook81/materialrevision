@@ -191,7 +191,7 @@ body.theme-light .app-header {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .mobile-menu-btn:hover {
@@ -292,7 +292,7 @@ body.theme-light .app-title .title-highlight {
   font-family: var(--font-sans);
   font-size: 0.85rem;
   color: var(--txt-primary);
-  transition: all var(--transition-norm);
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-wrapper input::placeholder {
@@ -343,7 +343,7 @@ body.theme-light .app-title .title-highlight {
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .nav-action-btn:hover {
@@ -460,7 +460,7 @@ body.theme-light .moon-icon { display: block; }
   border-radius: var(--radius-md);
   text-align: left;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   color: var(--txt-secondary);
   position: relative;
 }
@@ -498,7 +498,7 @@ body.theme-light .moon-icon { display: block; }
   background: var(--c-surface);
   border: 1px solid var(--bdr);
   color: var(--txt-tertiary);
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .nav-item.active .nav-num {
@@ -786,7 +786,7 @@ body.theme-light .moon-icon { display: block; }
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .subtab-btn:hover {
@@ -1252,7 +1252,7 @@ body.theme-light .alert-tip {
   font-family: var(--font-mono);
   font-size: 0.92rem;
   color: var(--txt-primary);
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .calc-input:focus {
@@ -1286,7 +1286,7 @@ body.theme-light .alert-tip {
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .calc-btn:hover {
@@ -1391,7 +1391,7 @@ body.theme-light .alert-tip {
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .flashcard:hover {
@@ -1722,8 +1722,7 @@ body.theme-light .alert-tip {
   position: absolute;
   bottom: 25px;
   right: 40px;
-  background: rgba(9, 13, 22, 0.75);
-  backdrop-filter: blur(4px);
+  background: rgba(9, 13, 22, 0.94);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1792,7 +1791,7 @@ body.theme-light .alert-tip {
   font-weight: 600;
   color: var(--txt-secondary);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .turret-btn:hover {
@@ -2011,8 +2010,7 @@ body.theme-light .alert-tip {
   right: 12px;
   display: flex;
   justify-content: space-between;
-  background: rgba(13, 19, 32, 0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(13, 19, 32, 0.94);
   padding: 0.35rem 0.65rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2042,7 +2040,7 @@ body.theme-light .alert-tip {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .sim-action-btn.primary {
@@ -2191,8 +2189,7 @@ body.theme-light .alert-tip {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(13, 19, 32, 0.88);
-  backdrop-filter: blur(6px);
+  background: rgba(13, 19, 32, 0.94);
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2317,8 +2314,7 @@ body.theme-light .alert-tip {
   right: 30px;
   display: flex;
   justify-content: space-between;
-  background: rgba(9, 13, 22, 0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(9, 13, 22, 0.94);
   padding: 0.35rem 0.65rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2353,7 +2349,7 @@ body.theme-light .alert-tip {
   font-weight: 600;
   color: var(--txt-secondary);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .load-btn:hover {
@@ -2556,4 +2552,23 @@ body.theme-light .alert-tip {
   .subtab-content {
     display: block !important;
   }
+}
+
+
+/* ── Hardware Acceleration & Tactile UI Polish ────────────── */
+button:active, .nav-item:active, .subtab-btn:active {
+  transform: scale(0.985);
+}
+
+.sidebar {
+  will-change: transform;
+}
+
+.app-header {
+  will-change: transform;
+}
+
+/* Ensure smooth text rendering */
+body {
+  text-rendering: optimizeLegibility;
 }

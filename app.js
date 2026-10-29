@@ -102,11 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (mobileSearchInput) {
+    let mobileSearchDebounce = null;
     mobileSearchInput.addEventListener('input', () => {
+      clearTimeout(mobileSearchDebounce);
       const q = mobileSearchInput.value.trim().toLowerCase();
       clearMobileSearchBtn.style.display = q ? 'block' : 'none';
-      if (q.length > 1) performSearch(q);
-      else {
+      if (q.length > 1) {
+        mobileSearchDebounce = setTimeout(() => performSearch(q), 120);
+      } else {
         const sp = document.getElementById('searchResultsSection');
         if (sp) sp.style.display = 'none';
       }
@@ -174,9 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Re-run MathJax on the newly visible content
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise();
+    // Optimize MathJax: only typeset newly active article if not yet typeset
+    const currentArticle = document.getElementById(`${expId}-content`);
+    if (window.MathJax && window.MathJax.typesetPromise && currentArticle && !currentArticle.dataset.mathTypeset) {
+      currentArticle.dataset.mathTypeset = 'true';
+      window.MathJax.typesetPromise([currentArticle]);
     }
 
     // Auto-close sidebar drawer on mobile after user picks an experiment
@@ -200,11 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
         subtabContents.forEach(content => {
           if (content.id === targetContentId) {
             content.classList.add('active');
-            // Re-run MathJax on the newly visible subtab panel
-            if (window.MathJax && window.MathJax.typesetPromise) {
+            // Optimize MathJax: only typeset if not yet typeset (prevents re-render lag)
+            if (window.MathJax && window.MathJax.typesetPromise && !content.dataset.mathTypeset) {
+              content.dataset.mathTypeset = 'true';
               window.MathJax.typesetPromise([content]);
             }
-            // Trigger resize to refresh canvas renderers if needed
+            // Trigger resize event only if needed
             window.dispatchEvent(new Event('resize'));
           } else {
             content.classList.remove('active');
@@ -564,11 +570,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeSearchPanel = document.getElementById('closeSearchPanel');
 
   if (searchInput) {
+    let desktopSearchDebounce = null;
     searchInput.addEventListener('input', () => {
+      clearTimeout(desktopSearchDebounce);
       const query = searchInput.value.trim().toLowerCase();
       if (query.length > 0) {
         clearSearchBtn.style.display = 'block';
-        performSearch(query);
+        desktopSearchDebounce = setTimeout(() => performSearch(query), 120);
       } else {
         clearSearchBtn.style.display = 'none';
         searchResultsSection.style.display = 'none';
@@ -1089,6 +1097,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    let microRaf = null;
+    function scheduleMicroscopeRender() {
+      if (!microRaf) {
+        microRaf = requestAnimationFrame(() => {
+          microRaf = null;
+          renderMicroscope();
+        });
+      }
+    }
+
     if (focusSlider) {
       focusSlider.addEventListener('input', () => {
         focusVal = parseInt(focusSlider.value, 10);
@@ -1096,7 +1114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (focusText) {
           focusText.textContent = diff < 5 ? 'Sharp (100%)' : diff < 15 ? 'Good (80%)' : 'Defocused';
         }
-        renderMicroscope();
+        scheduleMicroscopeRender();
       });
     }
 
@@ -1104,7 +1122,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lightSlider.addEventListener('input', () => {
         lightVal = parseInt(lightSlider.value, 10);
         if (lightText) lightText.textContent = `${lightVal}%`;
-        renderMicroscope();
+        scheduleMicroscopeRender();
       });
     }
 
@@ -2119,10 +2137,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    let exp3Raf = null;
     if (vfSlider) {
       vfSlider.addEventListener('input', () => {
         currentVf = parseInt(vfSlider.value, 10) / 100;
-        renderExp3Graph();
+        if (!exp3Raf) {
+          exp3Raf = requestAnimationFrame(() => {
+            exp3Raf = null;
+            renderExp3Graph();
+          });
+        }
       });
     }
 
@@ -2295,10 +2319,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (sliderVal) sliderVal.textContent = `${(progress * 14.6).toFixed(1)} kN`;
     }
 
+    let exp5Raf = null;
     if (loadSlider) {
       loadSlider.addEventListener('input', () => {
         progress = parseInt(loadSlider.value, 10) / 100;
-        renderExp5Graph();
+        if (!exp5Raf) {
+          exp5Raf = requestAnimationFrame(() => {
+            exp5Raf = null;
+            renderExp5Graph();
+          });
+        }
       });
     }
 
@@ -2496,10 +2526,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    let exp6Raf = null;
     if (stressSlider) {
       stressSlider.addEventListener('input', () => {
         currentStress = parseInt(stressSlider.value, 10);
-        renderExp6Graph();
+        if (!exp6Raf) {
+          exp6Raf = requestAnimationFrame(() => {
+            exp6Raf = null;
+            renderExp6Graph();
+          });
+        }
       });
     }
 
