@@ -2799,6 +2799,618 @@ document.addEventListener('DOMContentLoaded', () => {
     renderExp8Graph();
   }
 
+
+  // =========================================================================
+  // 19. ANIMATED APPARATUS ENGINES (FOR ALL EXPERIMENTS)
+  // =========================================================================
+
+  // ── Exp 6: Rotating Bending Fatigue Machine Engine ───────────────────────
+  initExp6Machine();
+  function initExp6Machine() {
+    const canvas = document.getElementById('exp6MachineCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('exp6StartBtn');
+    const resetBtn = document.getElementById('exp6ResetBtn');
+    const hudRevs = document.getElementById('hudExp6Revs');
+    const hudRpm = document.getElementById('hudExp6Rpm');
+
+    let animId = null;
+    let isRunning = false;
+    let isBroken = false;
+    let revs = 0;
+    let spinAngle = 0;
+
+    function drawFatigueMachine() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Bed plate
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(20, h - 50, w - 40, 25);
+
+      // Driving Motor Housing (Left)
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(25, h - 180, 65, 130);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(35, h - 170, 45, 110);
+      // Motor label
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '8px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('3500 RPM', 57, h - 110);
+
+      // Left Spindle Collet Chuck
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(90, h - 135, 20, 40);
+
+      // Driven Bearing Housing (Right)
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(w - 75, h - 165, 45, 115);
+
+      // Right Spindle Collet Chuck
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(w - 95, h - 135, 20, 40);
+
+      // Rotating Hourglass Specimen (between collets)
+      const specLeft = 110;
+      const specRight = w - 95;
+      const specMidX = (specLeft + specRight) / 2;
+      const baseY = h - 115;
+
+      // Downward deflection under bending moment
+      const deflection = isRunning ? 4.5 : 2.5;
+
+      if (!isBroken) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(specLeft, baseY - 8);
+        ctx.quadraticCurveTo(specMidX, baseY - 4 + deflection, specRight, baseY - 8);
+        ctx.lineTo(specRight, baseY + 8);
+        ctx.quadraticCurveTo(specMidX, baseY + 4 + deflection, specLeft, baseY + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#60a5fa';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // High-speed rotation surface stripes
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1;
+        const offset = (spinAngle % (Math.PI * 2)) / (Math.PI * 2) * 20;
+        for (let x = specLeft + 15; x < specRight - 15; x += 18) {
+          ctx.beginPath();
+          ctx.moveTo(x + offset, baseY - 3 + deflection);
+          ctx.lineTo(x + offset, baseY + 3 + deflection);
+          ctx.stroke();
+        }
+
+        // Hanging Load Hanger (attached at specimen center)
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(specMidX - 3, baseY + 5 + deflection, 6, 45); // Hanger rod
+        ctx.fillStyle = '#475569';
+        // Cast iron slotted weights
+        for (let i = 0; i < 4; i++) {
+          ctx.fillRect(specMidX - 22, baseY + 50 + deflection + i * 12, 44, 10);
+        }
+      } else {
+        // Fractured halves
+        ctx.fillStyle = '#94a3b8';
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+
+        // Left fractured stub
+        ctx.beginPath();
+        ctx.moveTo(specLeft, baseY - 8);
+        ctx.lineTo(specMidX - 6, baseY - 4);
+        ctx.lineTo(specMidX - 2, baseY + 4);
+        ctx.lineTo(specLeft, baseY + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Right fractured stub
+        ctx.beginPath();
+        ctx.moveTo(specRight, baseY - 8);
+        ctx.lineTo(specMidX + 6, baseY - 4);
+        ctx.lineTo(specMidX + 2, baseY + 4);
+        ctx.lineTo(specRight, baseY + 8);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Fallen weight hanger on base plate
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(specMidX - 3, h - 90, 6, 40);
+        for (let i = 0; i < 4; i++) {
+          ctx.fillRect(specMidX - 22, h - 50 + i * 8, 44, 8);
+        }
+      }
+
+      // Digital Revolution Counter Display Box
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(35, 30, w - 70, 48);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(35, 30, w - 70, 48);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '20px JetBrains Mono';
+      ctx.textAlign = 'center';
+      const revStr = String(Math.floor(revs)).padStart(6, '0');
+      ctx.fillText(revStr, w / 2, 62);
+    }
+
+    function stepFatigueMachine() {
+      if (!isRunning) return;
+      spinAngle += 0.8;
+      revs += 245; // simulate rapid cycle accumulation
+
+      if (hudRevs) hudRevs.textContent = String(Math.floor(revs)).padStart(6, '0');
+      if (hudRpm) hudRpm.textContent = '3500 rpm';
+
+      // Simulate specimen fracture threshold
+      if (revs > 185000) {
+        isRunning = false;
+        isBroken = true;
+        startBtn.disabled = true;
+        if (hudRpm) hudRpm.textContent = '0 rpm (CUTOFF)';
+        drawFatigueMachine();
+        return;
+      }
+
+      drawFatigueMachine();
+      animId = requestAnimationFrame(stepFatigueMachine);
+    }
+
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        if (!isRunning && !isBroken) {
+          isRunning = true;
+          startBtn.disabled = true;
+          stepFatigueMachine();
+        }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (animId) cancelAnimationFrame(animId);
+        isRunning = false;
+        isBroken = false;
+        revs = 0;
+        startBtn.disabled = false;
+        if (hudRevs) hudRevs.textContent = '000000';
+        if (hudRpm) hudRpm.textContent = '0 rpm';
+        drawFatigueMachine();
+      });
+    }
+
+    drawFatigueMachine();
+  }
+
+  // ── Exp 8: Muffle Furnace & Quench Tank Engine ───────────────────────────
+  initExp8Machine();
+  function initExp8Machine() {
+    const canvas = document.getElementById('exp8MachineCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const heatBtn = document.getElementById('exp8HeatBtn');
+    const quenchBtn = document.getElementById('exp8QuenchBtn');
+    const airBtn = document.getElementById('exp8AirBtn');
+    const hudTemp = document.getElementById('hudExp8Temp');
+    const hudState = document.getElementById('hudExp8State');
+
+    let currentTemp = 25;
+    let isHeating = false;
+    let isQuenching = false;
+    let specimenY = 160; // in furnace chamber
+    let bubbleParticles = [];
+
+    function drawFurnace() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Upper Half: Electric Muffle Furnace Outer Shell
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(20, 20, w - 40, 200);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 20, w - 40, 200);
+
+      // Inner Refractory Heating Chamber
+      // Color glows orange-red as temperature approaches 900°C
+      const heatFactor = Math.min(1, Math.max(0, (currentTemp - 100) / 800));
+      const red = Math.round(15 + heatFactor * 240);
+      const green = Math.round(23 + heatFactor * 110);
+      const blue = Math.round(42 - heatFactor * 30);
+      ctx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
+      ctx.fillRect(45, 45, w - 90, 150);
+
+      // Electric Kanthal Heating Coils along chamber walls
+      ctx.strokeStyle = heatFactor > 0.4 ? '#f59e0b' : '#64748b';
+      ctx.lineWidth = 2;
+      for (let y = 60; y <= 180; y += 18) {
+        ctx.beginPath();
+        ctx.moveTo(50, y);
+        for (let x = 50; x < w - 50; x += 12) {
+          ctx.lineTo(x + 6, y - 4);
+          ctx.lineTo(x + 12, y + 4);
+        }
+        ctx.stroke();
+      }
+
+      // Specimen Cylindrical Coupon
+      // Coupon glows with radiant heat
+      ctx.fillStyle = heatFactor > 0.6 ? '#fde047' : heatFactor > 0.3 ? '#f97316' : '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(w / 2, specimenY, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Lower Half: Water Quench Tank & Air Cooling Bench
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(25, h - 165, w - 50, 140);
+
+      // Water Tank with liquid
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.fillRect(35, h - 150, 110, 120);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(35, h - 150, 110, 120);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '9px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('WATER BATH', 90, h - 135);
+
+      // Air cooling rack
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(w - 115, h - 120, 80, 85);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('AIR RACK', w - 75, h - 100);
+
+      // If quenching in water: draw bubbling steam
+      if (isQuenching && specimenY > 240) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        bubbleParticles.forEach(b => {
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+    }
+
+    function animateHeat() {
+      if (currentTemp < 900) {
+        currentTemp += 15;
+        if (hudTemp) hudTemp.textContent = `${currentTemp} \u00B0C`;
+        if (hudState) hudState.textContent = 'HEATING TO AUSTENITE';
+        drawFurnace();
+        requestAnimationFrame(animateHeat);
+      } else {
+        isHeating = false;
+        currentTemp = 900;
+        if (hudTemp) hudTemp.textContent = '900 \u00B0C';
+        if (hudState) hudState.textContent = 'AUSTENITIZED (Ready to Quench)';
+        drawFurnace();
+      }
+    }
+
+    if (heatBtn) {
+      heatBtn.addEventListener('click', () => {
+        if (!isHeating) {
+          isHeating = true;
+          specimenY = 120;
+          animateHeat();
+        }
+      });
+    }
+
+    if (quenchBtn) {
+      quenchBtn.addEventListener('click', () => {
+        if (currentTemp >= 700) {
+          isQuenching = true;
+          // Move specimen down into water tank
+          specimenY = 320;
+          currentTemp = 35; // instant drop past CCR
+          if (hudTemp) hudTemp.textContent = '35 \u00B0C';
+          if (hudState) hudState.textContent = 'MARTENSITE (62 HRC)';
+          // Create bubble steam particles
+          bubbleParticles = [];
+          for (let p = 0; p < 25; p++) {
+            bubbleParticles.push({
+              x: 55 + Math.random() * 70,
+              y: 280 + Math.random() * 60,
+              r: 2 + Math.random() * 4
+            });
+          }
+          drawFurnace();
+          setTimeout(() => {
+            isQuenching = false;
+            drawFurnace();
+          }, 1200);
+        }
+      });
+    }
+
+    if (airBtn) {
+      airBtn.addEventListener('click', () => {
+        if (currentTemp >= 700) {
+          specimenY = 320; // on air rack
+          currentTemp = 200;
+          if (hudTemp) hudTemp.textContent = '200 \u00B0C';
+          if (hudState) hudState.textContent = 'NORMALIZED (175 HV)';
+          drawFurnace();
+        }
+      });
+    }
+
+    drawFurnace();
+  }
+
+  // ── Exp 5: Travelling Microscope Vernier Stage Engine ────────────────────
+  initExp5Machine();
+  function initExp5Machine() {
+    const canvas = document.getElementById('exp5MachineCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const leftBtn = document.getElementById('exp5TraverseLeftBtn');
+    const rightBtn = document.getElementById('exp5TraverseRightBtn');
+    const hudCrack = document.getElementById('hudExp5Crack');
+
+    let stageX = 140; // pixel position of optical stage
+
+    function drawTravellingMicroscope() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Upper Half: Circular Optical Eyepiece View of Specimen Crack
+      const eyeR = 90;
+      const eyeCx = w / 2;
+      const eyeCy = 115;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(eyeCx, eyeCy, eyeR, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Specimen polished surface
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(0, 0, w, 240);
+
+      // Machined Starter Notch (V-Notch on left side)
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.moveTo(eyeCx - 80 - (stageX - 140), eyeCy - 30);
+      ctx.lineTo(eyeCx - 30 - (stageX - 140), eyeCy);
+      ctx.lineTo(eyeCx - 80 - (stageX - 140), eyeCy + 30);
+      ctx.closePath();
+      ctx.fill();
+
+      // Fatigue Pre-crack line propagating from notch tip
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(eyeCx - 30 - (stageX - 140), eyeCy);
+      ctx.lineTo(eyeCx + 45 - (stageX - 140), eyeCy);
+      ctx.stroke();
+
+      // Optical Crosshairs (centered fixed in eyepiece)
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(eyeCx - eyeR, eyeCy);
+      ctx.lineTo(eyeCx + eyeR, eyeCy);
+      ctx.moveTo(eyeCx, eyeCy - eyeR);
+      ctx.lineTo(eyeCx, eyeCy + eyeR);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // Eyepiece outer brass bezel
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(eyeCx, eyeCy, eyeR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Lower Half: Vernier Scale & Rotating Micrometer Drum
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(20, h - 170, w - 40, 145);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(20, h - 170, w - 40, 145);
+
+      // Main Horizontal Scale (0.5 mm divisions)
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '9px JetBrains Mono';
+      ctx.textAlign = 'center';
+      for (let mark = 0; mark <= 12; mark++) {
+        const mx = 45 + mark * 16;
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = mark % 2 === 0 ? 1.8 : 1;
+        ctx.beginPath();
+        ctx.moveTo(mx, h - 130);
+        ctx.lineTo(mx, h - 130 + (mark % 2 === 0 ? 14 : 8));
+        ctx.stroke();
+        if (mark % 2 === 0) {
+          ctx.fillText(`${14 + mark * 0.5}`, mx, h - 136);
+        }
+      }
+
+      // Rotating Vernier Drum Thimble
+      const drumX = stageX + 15;
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drumX, h - 95, 60, 50);
+      ctx.strokeStyle = '#60a5fa';
+      ctx.strokeRect(drumX, h - 95, 60, 50);
+
+      ctx.fillStyle = '#60a5fa';
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText('0.01 mm', drumX + 30, h - 68);
+
+      // Compute physical crack length
+      const crackMm = 14.5 + (stageX - 100) * 0.018;
+      if (hudCrack) hudCrack.textContent = `${crackMm.toFixed(2)} mm`;
+    }
+
+    if (leftBtn) {
+      leftBtn.addEventListener('click', () => {
+        if (stageX > 70) {
+          stageX -= 12;
+          drawTravellingMicroscope();
+        }
+      });
+    }
+
+    if (rightBtn) {
+      rightBtn.addEventListener('click', () => {
+        if (stageX < 210) {
+          stageX += 12;
+          drawTravellingMicroscope();
+        }
+      });
+    }
+
+    drawTravellingMicroscope();
+  }
+
+  // ── Exp 3: Hand Lay-up & Roller Compaction Engine ────────────────────────
+  initExp3Machine();
+  function initExp3Machine() {
+    const canvas = document.getElementById('exp3MachineCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rollBtn = document.getElementById('exp3RollBtn');
+    const resetBtn = document.getElementById('exp3ResetBtn');
+    const hudPlies = document.getElementById('hudExp3Plies');
+    const hudVoids = document.getElementById('hudExp3Voids');
+
+    let rollerX = 60;
+    let isRolling = false;
+    let voidContent = 5.2; // % voids before compaction
+
+    function drawLayupBed() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Aluminum Tooling Mold Plate (Bottom)
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(25, h - 140, w - 50, 45);
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(25, h - 140, w - 50, 45);
+
+      // Release Wax / Gelcoat layer
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(30, h - 146, w - 60, 6);
+
+      // 4 Plies of Woven Glass Fabric + Amber Epoxy Matrix
+      const plyY = h - 176;
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.45)'; // Epoxy resin wet-out
+      ctx.fillRect(30, plyY, w - 60, 30);
+
+      // Woven crosshatch fiber grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 1;
+      for (let x = 35; x < w - 35; x += 10) {
+        ctx.beginPath();
+        ctx.moveTo(x, plyY);
+        ctx.lineTo(x, plyY + 30);
+        ctx.stroke();
+      }
+      for (let y = plyY + 6; y < plyY + 30; y += 7) {
+        ctx.beginPath();
+        ctx.moveTo(30, y);
+        ctx.lineTo(w - 30, y);
+        ctx.stroke();
+      }
+
+      // Serrated Bubble-Buster Roller Tool
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(rollerX - 16, plyY - 32, 32, 32); // grooved metal cylinder
+      // Grooves
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      for (let g = -12; g <= 12; g += 6) {
+        ctx.beginPath();
+        ctx.moveTo(rollerX + g, plyY - 32);
+        ctx.lineTo(rollerX + g, plyY);
+        ctx.stroke();
+      }
+
+      // Roller Handle
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(rollerX, plyY - 32);
+      ctx.lineTo(rollerX, plyY - 95);
+      ctx.lineTo(rollerX + 35, plyY - 130);
+      ctx.stroke();
+
+      // Air Void Bubbles (disappear as roller passes)
+      if (voidContent > 2.0) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        for (let b = 0; b < 10; b++) {
+          const bx = 50 + b * 18;
+          if (bx > rollerX) {
+            ctx.beginPath();
+            ctx.arc(bx, plyY + 12 + (b % 3) * 4, 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // Explanatory Tag
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('Serrated Bubble-Buster Roller (Void Compaction)', w / 2, 45);
+    }
+
+    function animateRoller() {
+      if (rollerX < 210) {
+        rollerX += 3;
+        voidContent = Math.max(1.2, voidContent - 0.08);
+        if (hudVoids) hudVoids.textContent = `${voidContent.toFixed(1)}%`;
+        drawLayupBed();
+        requestAnimationFrame(animateRoller);
+      } else {
+        isRolling = false;
+        if (hudVoids) hudVoids.textContent = '1.2% (Consolidated)';
+        drawLayupBed();
+      }
+    }
+
+    if (rollBtn) {
+      rollBtn.addEventListener('click', () => {
+        if (!isRolling) {
+          isRolling = true;
+          animateRoller();
+        }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        rollerX = 60;
+        voidContent = 5.2;
+        isRolling = false;
+        if (hudVoids) hudVoids.textContent = '5.2%';
+        drawLayupBed();
+      });
+    }
+
+    drawLayupBed();
+  }
+
   // =========================================================================
   // Print Lab Cheat Sheet
   // =========================================================================

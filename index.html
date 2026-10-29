@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
   <script>
     MathJax = {
       tex: {
@@ -1311,14 +1311,31 @@
                 </div>
               </div>
 
-              <div class="graph-studio-layout">
-                <div class="graph-canvas-container">
-                  <div class="graph-top-info">
-                    <span class="graph-title">Elastic Modulus Bounds (Voigt Upper Bound E<sub>1</sub> vs. Reuss Lower Bound E<sub>2</sub>)</span>
-                    <span class="live-phase-tag" id="exp3VfTag">V<sub>f</sub> = 40% (Optimum Hand Lay-up)</span>
+              <div class="utm-sim-layout">
+                <!-- Lamination Bed & Serrated Roller Compaction Canvas -->
+                <div class="utm-machine-col">
+                  <div class="machine-frame-wrap">
+                    <canvas id="exp3MachineCanvas" width="280" height="420" class="utm-canvas"></canvas>
+                    <div class="gauge-readout-hud">
+                      <div>Plies: <strong id="hudExp3Plies">4 Plies</strong></div>
+                      <div>Void Content: <strong id="hudExp3Voids">1.8%</strong></div>
+                    </div>
                   </div>
-                  <canvas id="exp3GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                  <div class="machine-ctrl-strip">
+                    <button id="exp3RollBtn" class="sim-action-btn primary">&#128080; Compact with Roller</button>
+                    <button id="exp3ResetBtn" class="sim-action-btn secondary">&#8635; Reset Lay-up</button>
+                  </div>
                 </div>
+
+                <!-- Composite Rule of Mixtures Graph Column -->
+                <div class="utm-graph-col">
+                  <div class="graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title">Elastic Modulus Bounds (Voigt E<sub>1</sub> vs. Reuss E<sub>2</sub>)</span>
+                      <span class="live-phase-tag" id="exp3VfTag">V<sub>f</sub> = 40% (Optimum Hand Lay-up)</span>
+                    </div>
+                    <canvas id="exp3GraphCanvas" width="540" height="320" class="graph-canvas"></canvas>
+                  </div>
 
                 <div class="graph-controls-panel">
                   <div class="control-group">
@@ -2144,14 +2161,31 @@
                 </div>
               </div>
 
-              <div class="graph-studio-layout">
-                <div class="graph-canvas-container">
-                  <div class="graph-top-info">
-                    <span class="graph-title">P vs. CMOD with 5% Secant Compliance Line (S<sub>5</sub> = 0.95 &times; S<sub>0</sub>)</span>
-                    <span class="live-phase-tag" id="exp5ValidityTag">VALID PLANE STRAIN TEST</span>
+              <div class="utm-sim-layout">
+                <!-- Travelling Microscope Stage Canvas -->
+                <div class="utm-machine-col">
+                  <div class="machine-frame-wrap">
+                    <canvas id="exp5MachineCanvas" width="280" height="420" class="utm-canvas"></canvas>
+                    <div class="gauge-readout-hud">
+                      <div>Crack (a): <strong id="hudExp5Crack">15.92 mm</strong></div>
+                      <div>Vernier LC: <strong id="hudExp5LC">0.01 mm</strong></div>
+                    </div>
                   </div>
-                  <canvas id="exp5GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                  <div class="machine-ctrl-strip">
+                    <button id="exp5TraverseLeftBtn" class="sim-action-btn secondary">&#9664; Notch</button>
+                    <button id="exp5TraverseRightBtn" class="sim-action-btn primary">Tip &#9654;</button>
+                  </div>
                 </div>
+
+                <!-- P-CMOD Graph Column -->
+                <div class="utm-graph-col">
+                  <div class="graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title">P vs. CMOD with 5% Secant Compliance Line (S<sub>5</sub> = 0.95 &times; S<sub>0</sub>)</span>
+                      <span class="live-phase-tag" id="exp5ValidityTag">VALID PLANE STRAIN TEST</span>
+                    </div>
+                    <canvas id="exp5GraphCanvas" width="540" height="320" class="graph-canvas"></canvas>
+                  </div>
 
                 <div class="graph-controls-panel">
                   <div class="control-group">
@@ -2567,14 +2601,31 @@
                 </div>
               </div>
 
-              <div class="graph-studio-layout">
-                <div class="graph-canvas-container">
-                  <div class="graph-top-info">
-                    <span class="graph-title">Semi-Log W&ouml;hler S-N Curve with Endurance Limit Plateau</span>
-                    <span class="live-phase-tag" id="exp6LifeStatus">SAFE INFINITE LIFE (N &gt; 10&#8311;)</span>
+              <div class="utm-sim-layout">
+                <!-- Machine Canvas (3500 rpm Rotating Bending Tester) -->
+                <div class="utm-machine-col">
+                  <div class="machine-frame-wrap">
+                    <canvas id="exp6MachineCanvas" width="280" height="420" class="utm-canvas"></canvas>
+                    <div class="gauge-readout-hud">
+                      <div>Rev Counter: <strong id="hudExp6Revs">000000</strong></div>
+                      <div>Speed: <strong id="hudExp6Rpm">0 rpm</strong></div>
+                    </div>
                   </div>
-                  <canvas id="exp6GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                  <div class="machine-ctrl-strip">
+                    <button id="exp6StartBtn" class="sim-action-btn primary">&#9654; Run Motor (3500 rpm)</button>
+                    <button id="exp6ResetBtn" class="sim-action-btn secondary">&#8635; Reset Machine</button>
+                  </div>
                 </div>
+
+                <!-- Wöhler S-N Graph Column -->
+                <div class="utm-graph-col">
+                  <div class="graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title">Semi-Log W&ouml;hler S-N Curve with Endurance Limit Plateau</span>
+                      <span class="live-phase-tag" id="exp6LifeStatus">SAFE INFINITE LIFE (N &gt; 10&#8311;)</span>
+                    </div>
+                    <canvas id="exp6GraphCanvas" width="540" height="320" class="graph-canvas"></canvas>
+                  </div>
 
                 <div class="graph-controls-panel">
                   <div class="control-group">
@@ -3398,14 +3449,34 @@
                 </div>
               </div>
 
-              <div class="graph-studio-layout">
-                <div class="graph-canvas-container">
-                  <div class="graph-top-info">
-                    <span class="graph-title" id="exp8GraphTitle">Complete Heat Treatment Cooling Regimens &amp; Critical Transformation Lines</span>
-                    <span class="live-phase-tag" id="exp8ModeTag">AUSTENITIZING @ 900&deg;C</span>
+              <div class="utm-sim-layout">
+                <!-- Furnace & Quench Tank Apparatus Canvas -->
+                <div class="utm-machine-col">
+                  <div class="machine-frame-wrap">
+                    <canvas id="exp8MachineCanvas" width="280" height="420" class="utm-canvas"></canvas>
+                    <div class="gauge-readout-hud">
+                      <div>Furnace Temp: <strong id="hudExp8Temp">25 &deg;C</strong></div>
+                      <div>State: <strong id="hudExp8State">ROOM TEMP</strong></div>
+                    </div>
                   </div>
-                  <canvas id="exp8GraphCanvas" width="620" height="360" class="graph-canvas"></canvas>
+                  <div class="machine-ctrl-strip" style="flex-direction: column; gap: 0.4rem;">
+                    <button id="exp8HeatBtn" class="sim-action-btn primary">&#128293; Heat to 900&deg;C (Austenitize)</button>
+                    <div style="display: flex; gap: 0.4rem; width: 100%;">
+                      <button id="exp8QuenchBtn" class="sim-action-btn secondary" style="flex:1;">&#128167; Water Quench</button>
+                      <button id="exp8AirBtn" class="sim-action-btn secondary" style="flex:1;">&#128168; Air Cool</button>
+                    </div>
+                  </div>
                 </div>
+
+                <!-- Thermal Cycle & Cooling Curve Column -->
+                <div class="utm-graph-col">
+                  <div class="graph-box">
+                    <div class="graph-top-info">
+                      <span class="graph-title" id="exp8GraphTitle">Thermal Cycles &amp; Phase Transformation Trajectory</span>
+                      <span class="live-phase-tag" id="exp8ModeTag">READY TO HEAT</span>
+                    </div>
+                    <canvas id="exp8GraphCanvas" width="540" height="320" class="graph-canvas"></canvas>
+                  </div>
 
                 <div class="graph-controls-panel">
                   <div class="control-group" id="exp8TemperingSliderGroup" style="display: none;">
@@ -3650,6 +3721,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
