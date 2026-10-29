@@ -3412,6 +3412,169 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
+  // Interactive Step-by-Step Execution Protocol Wizard (Space Saver)
+  // =========================================================================
+  initStepWizard();
+  function initStepWizard() {
+    const protocolCards = document.querySelectorAll('.protocol-card');
+    protocolCards.forEach(card => {
+      const timeline = card.querySelector('.timeline-steps');
+      if (!timeline) return;
+      const steps = Array.from(timeline.querySelectorAll('.step-item'));
+      if (steps.length <= 1) return;
+
+      let currentStep = 0;
+      let isStepMode = true; // Default: show one step at a time to minimize space!
+
+      timeline.classList.add('step-mode');
+
+      // 1. Build Stepper Header
+      const header = document.createElement('div');
+      header.className = 'stepper-header';
+
+      const pillsContainer = document.createElement('div');
+      pillsContainer.className = 'stepper-pills';
+
+      const pillButtons = [];
+      steps.forEach((step, idx) => {
+        const titleEl = step.querySelector('h4');
+        let fullTitle = titleEl ? titleEl.textContent.trim() : `Step ${idx + 1}`;
+        let shortTitle = fullTitle.split('&')[0].split('(')[0].trim();
+        if (shortTitle.length > 20) shortTitle = shortTitle.slice(0, 18) + '…';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'step-pill-btn' + (idx === 0 ? ' active' : '');
+        btn.innerHTML = `<span class="step-pill-num">${idx + 1}</span><span class="step-pill-title">${shortTitle}</span>`;
+        btn.title = fullTitle;
+        btn.addEventListener('click', () => {
+          if (!isStepMode) toggleMode(true);
+          goToStep(idx);
+        });
+        pillsContainer.appendChild(btn);
+        pillButtons.push(btn);
+      });
+
+      const toggleBtn = document.createElement('button');
+      toggleBtn.type = 'button';
+      toggleBtn.className = 'stepper-toggle-btn';
+      toggleBtn.innerHTML = '<span>☰</span> <span>Show All Steps</span>';
+      toggleBtn.addEventListener('click', () => {
+        toggleMode(!isStepMode);
+      });
+
+      header.appendChild(pillsContainer);
+      header.appendChild(toggleBtn);
+
+      // 2. Build Progress Track
+      const progressTrack = document.createElement('div');
+      progressTrack.className = 'stepper-progress-track';
+      const progressFill = document.createElement('div');
+      progressFill.className = 'stepper-progress-fill';
+      progressFill.style.width = `${(1 / steps.length) * 100}%`;
+      progressTrack.appendChild(progressFill);
+
+      // 3. Build Stepper Footer Navigation
+      const footerNav = document.createElement('div');
+      footerNav.className = 'stepper-footer-nav';
+
+      const prevBtn = document.createElement('button');
+      prevBtn.type = 'button';
+      prevBtn.className = 'stepper-nav-btn prev-btn';
+      prevBtn.innerHTML = '<span>←</span> <span>Previous Step</span>';
+      prevBtn.disabled = true;
+
+      const statusBadge = document.createElement('span');
+      statusBadge.className = 'stepper-status-badge';
+      statusBadge.innerHTML = `Step <strong class="cur-num">1</strong> of ${steps.length}`;
+
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'stepper-nav-btn primary next-btn';
+      nextBtn.innerHTML = '<span>Next Step</span> <span>→</span>';
+
+      footerNav.appendChild(prevBtn);
+      footerNav.appendChild(statusBadge);
+      footerNav.appendChild(nextBtn);
+
+      // Insert elements into DOM
+      timeline.parentNode.insertBefore(header, timeline);
+      timeline.parentNode.insertBefore(progressTrack, timeline);
+      timeline.parentNode.insertBefore(footerNav, timeline.nextSibling);
+
+      function updateUI() {
+        steps.forEach((s, idx) => {
+          if (idx === currentStep) {
+            s.classList.add('active-step');
+          } else {
+            s.classList.remove('active-step');
+          }
+        });
+
+        pillButtons.forEach((btn, idx) => {
+          if (idx === currentStep) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        progressFill.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+        statusBadge.innerHTML = `Step <strong class="cur-num">${currentStep + 1}</strong> of ${steps.length}`;
+
+        prevBtn.disabled = currentStep === 0;
+
+        if (currentStep === steps.length - 1) {
+          nextBtn.innerHTML = '<span>Checklist</span> <span>↓</span>';
+        } else {
+          nextBtn.innerHTML = '<span>Next Step</span> <span>→</span>';
+        }
+      }
+
+      function goToStep(idx) {
+        currentStep = Math.max(0, Math.min(idx, steps.length - 1));
+        updateUI();
+      }
+
+      function toggleMode(stepMode) {
+        isStepMode = stepMode;
+        if (isStepMode) {
+          timeline.classList.add('step-mode');
+          footerNav.style.display = 'flex';
+          progressTrack.style.display = 'block';
+          toggleBtn.innerHTML = '<span>☰</span> <span>Show All Steps</span>';
+          updateUI();
+        } else {
+          timeline.classList.remove('step-mode');
+          footerNav.style.display = 'none';
+          progressTrack.style.display = 'none';
+          toggleBtn.innerHTML = '<span>⊡</span> <span>Step-by-Step View</span>';
+          steps.forEach(s => s.classList.remove('active-step'));
+        }
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (currentStep > 0) goToStep(currentStep - 1);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+          goToStep(currentStep + 1);
+        } else {
+          // Reached end, scroll to checklist card smoothly
+          const checklist = card.closest('.subtab-content')?.querySelector('.checklist-card');
+          if (checklist) {
+            checklist.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      });
+
+      // Initial active state
+      goToStep(0);
+    });
+  }
+
+  // =========================================================================
   // Lab Practical Readiness Checklist Persistence & Interaction
   // =========================================================================
   const checkItems = document.querySelectorAll('.check-item');
